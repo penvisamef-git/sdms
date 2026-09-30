@@ -1,0 +1,233 @@
+/* =========================
+   MY ACCOUNT PAGE  (uses the --md-* tokens of .md-page)
+========================= */
+
+.ac-page {
+  max-width: 1080px;
+}
+
+.ac-hero {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 20px 22px;
+}
+
+.ac-avatar {
+  flex: none;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  background: var(--md-primary);
+}
+
+.ac-hero-text {
+  min-width: 0;
+}
+
+.ac-hero-text h2 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.4;
+}
+
+.ac-hero-text p {
+  margin: 2px 0 0;
+  color: var(--md-muted);
+  overflow-wrap: anywhere;
+}
+
+.ac-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.ac-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--md-soft);
+  color: var(--md-primary);
+  font-size: 12px;
+}
+
+/* ---------- cards ---------- */
+
+.ac-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.ac-wide {
+  grid-column: 1 / -1;
+}
+
+.ac-card {
+  padding: 18px 20px 20px;
+}
+
+.ac-card-head h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.ac-card-head p {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: var(--md-muted);
+}
+
+.ac-card-head {
+  margin-bottom: 12px;
+}
+
+.ac-muted {
+  color: var(--md-muted);
+}
+
+/* ---------- info rows ---------- */
+
+.ac-rows {
+  margin: 0;
+}
+
+.ac-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--md-border);
+}
+
+.ac-row:first-child {
+  border-top: 0;
+}
+
+.ac-row-icon {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  background: var(--md-soft);
+  color: var(--md-primary);
+}
+
+.ac-row-text {
+  min-width: 0;
+}
+
+.ac-row-text dt {
+  font-size: 12px;
+  color: var(--md-muted);
+}
+
+.ac-row-text dd {
+  margin: 1px 0 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- org chain ---------- */
+
+.ac-chain {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ac-chain li {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  padding: 8px 0 8px var(--indent, 0px);
+}
+
+.ac-chain-dot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  margin-top: 7px;
+  border-radius: 50%;
+  background: #b4bfbc;
+}
+
+.ac-chain li.is-current .ac-chain-dot {
+  background: var(--md-primary);
+}
+
+.ac-chain-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ac-chain-text small {
+  font-size: 12px;
+  color: var(--md-muted);
+}
+
+.ac-chain-text b {
+  overflow-wrap: anywhere;
+}
+
+.ac-chain-text em {
+  font-style: normal;
+  font-size: 12px;
+  color: var(--md-muted);
+}
+
+/* ---------- password form ---------- */
+
+.ac-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 16px;
+}
+
+.ac-form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.ac-form-error {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 800px) {
+  .ac-grid,
+  .ac-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ac-hero {
+    padding: 16px;
+  }
+
+  .ac-form-actions {
+    justify-content: stretch;
+  }
+
+  .ac-form-actions .md-btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+.ac-page .md-field input {
+  box-sizing: border-box;
+}

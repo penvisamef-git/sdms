@@ -1,0 +1,458 @@
+/* =========================
+   CUSTOM INPUT - STYLES
+========================= */
+
+/* CSS Variables - Light Theme (Default) */
+.custom-input-wrapper {
+  --input-bg: #ffffff;
+  --input-text-color: #1a1a1a;
+  --input-border-color: #e2e8f0;
+  --input-border-hover: #b8c9c0;
+  --input-placeholder-color: #a8a8a8;
+  --input-label-color: #2d2d2d;
+  --input-helper-color: #6b6b6b;
+  --input-icon-color: #9e9e9e;
+  --input-disabled-bg: #f5f5f5;
+  --input-readonly-bg: #f8f8f8;
+  --input-filled-bg: #f5f0eb;
+  --input-filled-hover: #ede8e3;
+  --input-focus-color: #2d6a4f;
+  --input-focus-shadow: 0 0 0 4px rgba(45, 106, 79, 0.1);
+  --input-error-color: #dc2626;
+  --input-success-color: #22c55e;
+  --input-border-radius: 8px;
+  --input-font-size: 14px;
+  --input-padding: 10px 14px;
+}
+
+/* Wrapper */
+.custom-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: auto;
+}
+
+.custom-input-wrapper.full-width {
+  width: 100%;
+}
+
+/* Label */
+.custom-input-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--input-label-color, #2d2d2d);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.custom-input-label .required-star {
+  color: var(--input-error-color, #dc2626);
+  font-size: 16px;
+}
+
+/* Container */
+.custom-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--input-bg, #ffffff);
+  border: 2px solid var(--input-border-color, #e2e8f0);
+  border-radius: var(--input-border-radius, 8px);
+  transition: all 0.25s ease;
+  overflow: hidden;
+}
+
+.custom-input-container:hover {
+  border-color: var(--input-border-hover, #b8c9c0);
+}
+
+.custom-input-container.focused {
+  border-color: var(--input-focus-color, #2d6a4f);
+  box-shadow: var(--input-focus-shadow, 0 0 0 4px rgba(45, 106, 79, 0.1));
+}
+
+/* Disabled */
+.custom-input-container.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--input-disabled-bg, #f5f5f5);
+}
+
+.custom-input-container.disabled .custom-input {
+  cursor: not-allowed;
+}
+
+/* Readonly */
+.custom-input-container.readonly {
+  background: var(--input-readonly-bg, #f8f8f8);
+}
+
+.custom-input-container.readonly .custom-input {
+  cursor: default;
+}
+
+/* Input */
+.custom-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: var(--input-font-size, 14px);
+  font-family: inherit;
+  color: var(--input-text-color, #1a1a1a) !important;
+  padding: var(--input-padding, 10px 14px);
+  min-width: 0;
+  width: 100%;
+}
+
+.custom-input::placeholder {
+  color: var(--input-placeholder-color, #a8a8a8);
+}
+
+.custom-input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--input-bg, #ffffff) inset !important;
+  -webkit-text-fill-color: var(--input-text-color, #1a1a1a) !important;
+}
+
+/* =========================
+   VARIANTS
+========================= */
+
+/* Outline */
+.custom-input-container.input-outline {
+  background: transparent;
+  border-color: var(--input-border-color, #e2e8f0);
+}
+
+.custom-input-container.input-outline:hover {
+  border-color: var(--input-border-hover, #b8c9c0);
+}
+
+.custom-input-container.input-outline.focused {
+  border-color: var(--input-focus-color, #2d6a4f);
+  box-shadow: var(--input-focus-shadow, 0 0 0 4px rgba(45, 106, 79, 0.1));
+}
+
+/* Filled */
+.custom-input-container.input-filled {
+  background: var(--input-filled-bg, #f5f0eb);
+  border-color: transparent;
+}
+
+.custom-input-container.input-filled:hover {
+  background: var(--input-filled-hover, #ede8e3);
+}
+
+.custom-input-container.input-filled.focused {
+  background: var(--input-bg, #ffffff);
+  border-color: var(--input-focus-color, #2d6a4f);
+  box-shadow: var(--input-focus-shadow, 0 0 0 4px rgba(45, 106, 79, 0.1));
+}
+
+/* Underlined */
+.custom-input-container.input-underlined {
+  border: none;
+  border-radius: 0;
+  border-bottom: 2px solid var(--input-border-color, #e2e8f0);
+  background: transparent;
+  padding: 0;
+}
+
+.custom-input-container.input-underlined .custom-input {
+  padding: 8px 4px;
+}
+
+.custom-input-container.input-underlined:hover {
+  border-bottom-color: var(--input-border-hover, #b8c9c0);
+}
+
+.custom-input-container.input-underlined.focused {
+  border-bottom-color: var(--input-focus-color, #2d6a4f);
+  box-shadow: none;
+}
+
+/* Rounded */
+.custom-input-container.input-rounded {
+  border-radius: 50px;
+  padding: 0 6px;
+}
+
+.custom-input-container.input-rounded .custom-input {
+  padding: 10px 16px;
+}
+
+/* =========================
+   SIZES
+========================= */
+
+/* Small */
+.custom-input-container.input-sm .custom-input {
+  font-size: 12px;
+  padding: 6px 10px;
+}
+
+.custom-input-container.input-sm .input-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.custom-input-container.input-sm .input-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Large */
+.custom-input-container.input-lg .custom-input {
+  font-size: 16px;
+  padding: 14px 18px;
+}
+
+.custom-input-container.input-lg .input-icon {
+  width: 44px;
+  height: 44px;
+}
+
+.custom-input-container.input-lg .input-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.custom-input-container.input-lg .input-password-toggle,
+.custom-input-container.input-lg .input-clear-btn {
+  width: 44px;
+  height: 44px;
+}
+
+/* =========================
+   COLORS
+========================= */
+
+/* Primary */
+.custom-input-container.input-primary.focused {
+  border-color: var(--color-primary-main, #2d6a4f);
+  box-shadow: 0 0 0 4px rgba(45, 106, 79, 0.1);
+}
+
+.custom-input-container.input-primary .custom-input:focus {
+  color: var(--color-primary-main, #2d6a4f);
+}
+
+/* Secondary */
+.custom-input-container.input-secondary.focused {
+  border-color: var(--color-secondary-main, #d4a373);
+  box-shadow: 0 0 0 4px rgba(212, 163, 115, 0.15);
+}
+
+/* Success */
+.custom-input-container.input-success.focused {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
+}
+
+/* Warning */
+.custom-input-container.input-warning.focused {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.12);
+}
+
+/* Danger / Error */
+.custom-input-container.input-danger.focused,
+.custom-input-container.has-error {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
+}
+
+.custom-input-container.input-danger .custom-input:focus {
+  color: #dc2626;
+}
+
+/* Info */
+.custom-input-container.input-info.focused {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+}
+
+/* =========================
+   ICONS
+========================= */
+
+.input-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  color: var(--input-icon-color, #9e9e9e);
+  flex-shrink: 0;
+}
+
+.custom-input-container.icon-right .input-icon-left {
+  order: 0;
+}
+
+.custom-input-container.icon-right .custom-input {
+  order: 1;
+}
+
+.custom-input-container.icon-right .input-icon-right {
+  order: 2;
+}
+
+/* =========================
+   STATUS ICONS
+========================= */
+
+.input-status-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.input-status-error {
+  color: #dc2626;
+}
+
+.input-status-success {
+  color: #22c55e;
+}
+
+/* =========================
+   PASSWORD TOGGLE
+========================= */
+
+.input-password-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: none;
+  background: transparent;
+  color: var(--input-icon-color, #9e9e9e);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.input-password-toggle:hover {
+  color: var(--input-text-color, #1a1a1a);
+}
+
+/* =========================
+   CLEAR BUTTON
+========================= */
+
+.input-clear-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: none;
+  background: transparent;
+  color: var(--input-icon-color, #9e9e9e);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.input-clear-btn:hover {
+  color: var(--input-text-color, #1a1a1a);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* =========================
+   HELPER TEXT
+========================= */
+
+.custom-input-helper {
+  font-size: 12px;
+  color: var(--input-helper-color, #6b6b6b);
+  transition: color 0.2s ease;
+  min-height: 20px;
+}
+
+.custom-input-helper.has-error {
+  color: #dc2626;
+}
+
+/* =========================
+   ERROR STATE
+========================= */
+
+.custom-input-container.has-error {
+  border-color: #dc2626;
+}
+
+.custom-input-container.has-error.focused {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
+}
+
+.custom-input-container.has-error .custom-input {
+  color: #dc2626 !important;
+}
+
+.custom-input-container.has-error .custom-input::placeholder {
+  color: #fca5a5;
+}
+
+/* =========================
+   SUCCESS STATE
+========================= */
+
+.custom-input-container.has-success {
+  border-color: #22c55e;
+}
+
+.custom-input-container.has-success.focused {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes input-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+.custom-input-container.has-error.shake {
+  animation: input-shake 0.4s ease;
+}
+
+/* =========================
+   DARK THEME SUPPORT
+========================= */
+
+@media (prefers-color-scheme: dark) {
+   
+  .custom-input-wrapper {
+     margin-top: 10px;
+    --input-bg: #f9f9f9;
+    --input-text-color: #000000;
+    --input-border-color: #2d2d2d;
+    --input-border-hover: #3d3d3d;
+    --input-placeholder-color: #6b6b6b;
+    --input-label-color: #e8edf5;
+    --input-helper-color: #8899bb;
+    --input-icon-color: #6b6b6b;
+    --input-disabled-bg: #2d2d2d;
+    --input-readonly-bg: #2d2d2d;
+    --input-filled-bg: #2d2d2d;
+    --input-filled-hover: #3d3d3d;
+  }
+}

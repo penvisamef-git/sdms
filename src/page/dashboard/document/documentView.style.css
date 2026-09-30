@@ -1,0 +1,349 @@
+/* ---------- Received document detail page (read-only) ---------- */
+
+.doc-view-bar {
+  background: #eef7f6;
+  border-color: #cfe6e3;
+  color: var(--md-primary);
+}
+
+.doc-view-note {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--md-muted);
+}
+
+/* looks like a disabled form field */
+.doc-view-value {
+  min-height: 40px;
+  padding: 9px 12px;
+  border: 1px solid var(--md-border);
+  border-radius: 8px;
+  background: #f7f9f8;
+  color: var(--md-text);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.doc-view-value-empty {
+  color: var(--md-muted);
+}
+
+/* small action button inside a table row */
+.doc-btn-sm {
+  padding: 5px 12px !important;
+  font-size: 13px !important;
+  gap: 5px !important;
+}
+
+.doc-receiver-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+/* ---------- extra badges ---------- */
+.md-badge-danger {
+  background: #fdecec;
+  color: #c0392b;
+}
+
+.md-badge-muted {
+  background: #eef0ef;
+  color: var(--md-muted);
+}
+
+/* ---------- Tracking ---------- */
+.trk-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.trk-tile {
+  padding: 12px;
+  border: 1px solid var(--md-border);
+  border-radius: 8px;
+  background: #f7f9f8;
+  text-align: center;
+}
+
+.trk-tile-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--md-primary);
+}
+
+.trk-tile-label {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--md-muted);
+}
+
+.trk-dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  font-size: 13px;
+  color: var(--md-muted);
+}
+
+.trk-holders {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.trk-holder {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--md-border);
+  border-radius: 8px;
+}
+
+.trk-holder small {
+  color: var(--md-muted);
+}
+
+.trk-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 4px;
+}
+
+.trk-item {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  padding-bottom: 16px;
+}
+
+.trk-item:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 13px;
+  top: 28px;
+  bottom: 0;
+  width: 2px;
+  background: var(--md-border);
+}
+
+.trk-dot {
+  flex: 0 0 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--md-soft);
+  color: var(--md-primary);
+}
+
+.trk-item-return .trk-dot {
+  background: #fdecec;
+  color: #c0392b;
+}
+
+.trk-body {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--md-border);
+  border-radius: 8px;
+}
+
+.trk-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.trk-step {
+  font-size: 12px;
+  color: var(--md-muted);
+}
+
+.trk-flow {
+  font-size: 12px;
+  color: var(--md-muted);
+}
+
+.trk-route {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.trk-times {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin-top: 4px;
+  font-size: 12.5px;
+  color: var(--md-muted);
+}
+
+.trk-note {
+  margin-top: 6px;
+  padding: 6px 10px;
+  background: #f7f9f8;
+  border-radius: 6px;
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+
+/* ---------- Detail page actions ---------- */
+.doc-action-note {
+  margin-top: 12px;
+}
+
+.doc-action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.doc-received-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.doc-view-bar-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+/* ---------- Open a file inside the page ---------- */
+.doc-file-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.doc-file-btn {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--md-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--md-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.doc-file-btn:hover,
+.doc-file-btn-active {
+  border-color: var(--md-primary);
+  background: var(--md-soft);
+}
+
+.doc-file-btn span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.doc-file-btn small {
+  color: var(--md-muted);
+}
+
+.doc-viewer {
+  scroll-margin-top: 70px;
+}
+
+.doc-viewer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.doc-viewer-title {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.doc-viewer-title strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.doc-viewer-title small {
+  color: var(--md-muted);
+}
+
+.doc-viewer-tools {
+  display: flex;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+.doc-viewer-tools a.md-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.doc-viewer-body {
+  border: 1px solid var(--md-border);
+  border-radius: 8px;
+  background: #f1f3f2;
+  overflow: hidden;
+}
+
+.doc-viewer-frame {
+  display: block;
+  width: 100%;
+  height: 78vh;
+  min-height: 480px;
+  border: 0;
+  background: #fff;
+}
+
+.doc-viewer-image {
+  display: flex;
+  justify-content: center;
+  max-height: 78vh;
+  overflow: auto;
+  padding: 12px;
+}
+
+.doc-viewer-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+.doc-viewer-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 16px;
+  color: var(--md-muted);
+  text-align: center;
+}

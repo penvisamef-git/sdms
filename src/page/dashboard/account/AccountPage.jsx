@@ -34,9 +34,9 @@ function InfoRow({ icon, label, value }) {
   );
 }
 
-function PasswordField({ id, label, value, onChange, show, autoComplete }) {
+function PasswordField({ id, label, value, onChange, show, autoComplete, className = "" }) {
   return (
-    <div className="md-field">
+    <div className={`md-field ${className}`}>
       <label htmlFor={id}>{label}</label>
       <input
         id={id}
@@ -56,6 +56,7 @@ function AccountPage() {
   const [chain, setChain] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const [oldPassword, setOldPassword] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [showPwd, setShowPwd] = useState(false);
@@ -84,7 +85,6 @@ function AccountPage() {
 
   // saved login info is the base; the live profile fills in / overrides
   const me = { ...login, ...profile };
-  const userId = me._id || login._id;
   const fullName = `${me.firstname || ""} ${me.lastname || ""}`.trim();
   const initial = Array.from(me.firstname || me.email || "?")[0].toUpperCase();
   const officeName = chain?.office?.name || nameOf(me.office_id);
@@ -93,22 +93,27 @@ function AccountPage() {
   const submit = async (e) => {
     e.preventDefault();
     setError("");
+    if (!oldPassword) {
+      setError("សូមបញ្ចូលពាក្យសម្ងាត់ចាស់");
+      return;
+    }
     if (!password) {
       setError("សូមបញ្ចូលពាក្យសម្ងាត់ថ្មី");
+      return;
+    }
+    if (password.length < 8) {
+      setError("ពាក្យសម្ងាត់ថ្មីត្រូវមានយ៉ាងតិច ៨ តួអក្សរ");
       return;
     }
     if (password !== confirm) {
       setError("ពាក្យសម្ងាត់បញ្ជាក់មិនត្រូវគ្នា");
       return;
     }
-    if (!userId) {
-      setError("រកមិនឃើញគណនីរបស់អ្នក សូមចូលប្រើប្រាស់ម្តងទៀត");
-      return;
-    }
     setSaving(true);
     try {
-      const res = await userService.resetPassword(userId, { password });
+      const res = await userService.changePassword({ old_password: oldPassword, new_password: password });
       setNotice(res?.message || "បានប្តូរពាក្យសម្ងាត់ថ្មី!");
+      setOldPassword("");
       setPassword("");
       setConfirm("");
     } catch (err) {
@@ -192,9 +197,18 @@ function AccountPage() {
         <section className="md-card ac-card ac-wide">
           <header className="ac-card-head">
             <h3>ប្តូរពាក្យសម្ងាត់</h3>
-            <p>ពាក្យសម្ងាត់ថ្មីនឹងប្រើបានចាប់ពីពេលចូលប្រើប្រាស់លើកក្រោយ</p>
+            <p>ឧបករណ៍ផ្សេងទៀតនឹងត្រូវចូលគណនីម្តងទៀត (យ៉ាងតិច ៨ តួអក្សរ)</p>
           </header>
           <form className="ac-form" onSubmit={submit} noValidate>
+            <PasswordField
+              id="ac-old"
+              label="ពាក្យសម្ងាត់ចាស់"
+              value={oldPassword}
+              onChange={setOldPassword}
+              show={showPwd}
+              autoComplete="current-password"
+              className="ac-wide"
+            />
             <PasswordField
               id="ac-new"
               label="ពាក្យសម្ងាត់ថ្មី"

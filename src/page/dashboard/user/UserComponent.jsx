@@ -93,6 +93,7 @@ function UserComponent() {
         placeholder: "-- ជ្រើសរើសក្រុមសិទ្ធិ --",
         options: ROLE_OPTIONS,
       },
+      { key: "can_login_in_app", label: "អនុញ្ញាតឱ្យចូលប្រើក្នុង Mobile App", type: "checkbox" },
       { key: "note", label: "កំណត់សម្គាល់", type: "textarea" },
     ],
     [offices],

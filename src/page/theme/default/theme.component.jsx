@@ -32,6 +32,7 @@ import "./color.script";
 import {themeColors} from './color.script'
 import Auth from "../../util/auth.js"
 import { APP_VERSION_TEXT } from "../../../appInfo";
+import { authService } from "../../../api/api.service";
 
 function Theme({ component, currentRoute, routeList }) {
   const auth = new Auth()
@@ -96,7 +97,13 @@ function Theme({ component, currentRoute, routeList }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [confirmLogout]);
 
-  const doLogout = () => {
+  const doLogout = async () => {
+    // tell the server first so the token stops working; leave anyway if that fails
+    try {
+      await authService.logout();
+    } catch {
+      /* ignore */
+    }
     auth.removeClientLogin();
     window.location.href = "/login";
   };

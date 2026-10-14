@@ -23,11 +23,15 @@ export const authService = {
   login: (email, password) =>
     apiClient.post("/auth/login", { email, password }, { skipAuth: true }),
   testLoggedIn: () => apiClient.get("/auth/test-logged-in"),
+  // end THIS device's session on the server (the token stops working)
+  logout: () => apiClient.post("/auth/logout", {}),
 };
 
 // ================= User =================
 export const userService = {
   ...createResource("users"),
+  // my own password: { old_password, new_password }
+  changePassword: (data) => apiClient.put("/users/change-password", data),
   resetPassword: (id, data) => apiClient.put(`/users/reset-password/${id}`, data),
   profile: () => apiClient.get("/users-app/profile"),
 };

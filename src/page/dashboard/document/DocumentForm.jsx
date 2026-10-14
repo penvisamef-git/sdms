@@ -9,6 +9,7 @@ import {
   unitService,
   userService,
 } from "../../../api/api.service";
+import { needsDirectUpload, uploadDirect } from "../../../api/directUpload";
 import Auth from "../../util/auth";
 import FilePicker from "./FilePicker";
 import SearchSelect from "./SearchSelect";
@@ -222,6 +223,29 @@ function DocumentForm({ documentId }) {
     setRefs((prev) => prev.map((r) => (r.key === key ? { ...r, [field]: value } : r)));
 
   // ---------------- Submit ----------------
+  const [uploadPct, setUploadPct] = useState(null); // 0..1 while big files upload straight to Cloudinary
+
+  // upload every new file straight to Cloudinary → { main: [...], refs: [[...], ...] } (refs follow usedRefs order)
+  const uploadAll = async (usedRefs) => {
+    const groups = [
+      { files: mainFiles, folder: "documents" },
+      ...usedRefs.map((r) => ({ files: r.files, folder: "references" })),
+    ];
+    const total = groups.reduce((sum, g) => sum + g.files.reduce((s, f) => s + f.size, 0), 0) || 1;
+    let before = 0;
+    const results = [];
+    setUploadPct(0);
+    for (const g of groups) {
+      const size = g.files.reduce((s, f) => s + f.size, 0);
+      results.push(
+        await uploadDirect(g.files, g.folder, (fraction) => setUploadPct((before + fraction * size) / total)),
+      );
+      before += size;
+    }
+    setUploadPct(null);
+    return { main: results[0], refs: results.slice(1) };
+  };
+
   const checkFiles = (files, label) => {
     const tooBig = files.find((f) => f.size > MAX_FILE_MB * 1024 * 1024);
     if (tooBig) return `${label}: "${tooBig.name}" ធំពេក! (អតិបរមា ${MAX_FILE_MB}MB)`;
@@ -230,7 +254,8 @@ function DocumentForm({ documentId }) {
 
   // Edit: 1) JSON PUT with the fields and the saved files to keep, 2) multipart PUT with the new files
   // (the API appends uploaded files to the saved ones, so a removed saved file needs step 1 first)
-  const submitEdit = async (usedRefs) => {
+  // `up` (big files only): files already uploaded straight to Cloudinary → { main: [...], refs: [[...], ...] }
+  const submitEdit = async (usedRefs, up) => {
     const body = {};
     Object.entries(form).forEach(([key, value]) => {
       const text = String(value).trim();
@@ -238,18 +263,18 @@ function DocumentForm({ documentId }) {
       else if (DATE_KEYS.includes(key)) body[key] = text || null;
       else body[key] = text;
     });
-    body.document_main_url = mainKept;
-    body.reference_document = usedRefs.map((r) => ({
+    body.document_main_url = [...mainKept, ...(up?.main || [])];
+    body.reference_document = usedRefs.map((r, i) => ({
       number_document: r.number_document.trim(),
       date_sign: r.date_sign || null,
       objective: r.objective.trim(),
-      files: r.existing,
+      files: [...r.existing, ...(up?.refs?.[i] || [])],
     }));
 
     let res = await documentService.update(documentId, body);
 
-    const hasNewMain = mainFiles.length > 0;
-    const hasNewRef = usedRefs.some((r) => r.files.length > 0);
+    const hasNewMain = !up && mainFiles.length > 0;
+    const hasNewRef = !up && usedRefs.some((r) => r.files.length > 0);
     if (hasNewMain || hasNewRef) {
       const fd = new FormData();
       mainFiles.forEach((f) => fd.append("document_files", f));
@@ -320,14 +345,51 @@ function DocumentForm({ documentId }) {
       return;
     }
 
+    // big files go straight to Cloudinary (the API can't take more than ~4 MB per request on Vercel)
+    const newFiles = [...mainFiles, ...usedRefs.flatMap((r) => r.files)];
+    const direct = needsDirectUpload(newFiles);
+
     if (isEdit) {
       setSaving(true);
       try {
-        const res = await submitEdit(usedRefs);
+        const up = direct ? await uploadAll(usedRefs) : undefined;
+        const res = await submitEdit(usedRefs, up);
         navigate("/document/out", { state: { notice: res.message || "បានរក្សាទុក!" } });
       } catch (err) {
         setError(err.message);
         setSaving(false);
+        setUploadPct(null);
+      }
+      return;
+    }
+
+    if (direct) {
+      setSaving(true);
+      try {
+        const up = await uploadAll(usedRefs);
+        const body = {};
+        Object.entries(form).forEach(([key, value]) => {
+          if (String(value).trim() !== "") body[key] = value;
+        });
+        const offices = toOffice?.offices || [];
+        if (offices.length > 0) body.send_to_office_id = offices;
+        if (toUserId) body.send_to_user_id = [toUserId];
+        if (sendNote.trim()) body.send_note = sendNote.trim();
+        if (up.main.length > 0) body.document_main_url = up.main;
+        if (usedRefs.length > 0) {
+          body.reference_document = usedRefs.map((r, i) => ({
+            number_document: r.number_document.trim(),
+            date_sign: r.date_sign || null,
+            objective: r.objective.trim(),
+            files: up.refs[i] || [],
+          }));
+        }
+        const res = await documentService.create(body);
+        navigate("/document/out", { state: { notice: res.message || "បានរក្សាទុក!" } });
+      } catch (err) {
+        setError(err.message);
+        setSaving(false);
+        setUploadPct(null);
       }
       return;
     }
@@ -626,7 +688,11 @@ function DocumentForm({ documentId }) {
         {!locked && (
           <button type="submit" className="md-btn md-btn-primary" disabled={busy}>
             <Save size={16} />
-            {saving ? "កំពុងរក្សាទុក..." : "រក្សាទុក"}
+            {saving
+              ? uploadPct !== null
+                ? `កំពុង upload ${Math.round(uploadPct * 100)}%`
+                : "កំពុងរក្សាទុក..."
+              : "រក្សាទុក"}
           </button>
         )}
       </div>

@@ -49,6 +49,8 @@ export const homeService = {
 // upload(FormData): files (many) + folder ("documents" | "references") → { data: [{ url, public_id, ... }] }
 export const uploadService = {
   upload: (formData) => apiClient.post("/upload", formData),
+  // signature for uploading big files straight to Cloudinary (see directUpload.js)
+  signature: (folder) => apiClient.get("/upload/signature", { folder }),
 };
 
 // ================= Document =================
@@ -61,6 +63,7 @@ export const documentService = {
   // timeline + tree + summary of every hop of the document
   tracking: (id) => apiClient.get(`/document/${id}/tracking`),
   // replace one saved file with a signed copy — FormData: file + public_id (of the file being replaced)
+  //   or, for big files already uploaded to Cloudinary, JSON: { public_id, file: { url, public_id, resource_type, format, bytes } }
   // (creator office, or a receiver who holds the document and has not passed it on yet)
   replaceFile: (id, formData) => apiClient.put(`/document/${id}/file`, formData),
 };

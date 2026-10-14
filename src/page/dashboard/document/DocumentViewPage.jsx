@@ -20,6 +20,7 @@ import {
   uploadService,
   userService,
 } from "../../../api/api.service";
+import { needsDirectUpload, uploadDirect } from "../../../api/directUpload";
 import Auth from "../../util/auth";
 import FileViewer from "./FileViewer";
 import ReceiverCard from "./ReceiverCard";
@@ -254,15 +255,24 @@ function DocumentViewPage() {
     if (mainIndex < 0 && refIndex < 0) throw new Error("រកមិនឃើញឯកសារនេះក្នុងឯកសារដើមទេ");
 
     const name = preview.original_name || "document.pdf";
+    const signedFile = new File([blob], name, { type: "application/pdf" });
+    // big PDFs can't pass through the API (Vercel body limit) → upload straight to Cloudinary first
+    const direct = needsDirectUpload([signedFile]);
 
     // a receiver cannot edit the document → the API replaces the file for them
     // (the creator office / a super admin edits it directly, below)
     if (!isOwner) {
       const refFileIndex = refIndex >= 0 ? (refList[refIndex].files || []).findIndex((f) => f.public_id === oldId) : -1;
-      const form = new FormData();
-      form.append("public_id", oldId);
-      form.append("file", new File([blob], name, { type: "application/pdf" }));
-      const res = await documentService.replaceFile(id, form);
+      let payload;
+      if (direct) {
+        const [uploadedBig] = await uploadDirect([signedFile], mainIndex >= 0 ? "documents" : "references");
+        payload = { public_id: oldId, file: uploadedBig };
+      } else {
+        payload = new FormData();
+        payload.append("public_id", oldId);
+        payload.append("file", signedFile);
+      }
+      const res = await documentService.replaceFile(id, payload);
       const d = res.data || {};
       const fresh =
         res.file ||
@@ -276,11 +286,16 @@ function DocumentViewPage() {
       return;
     }
 
-    const fd = new FormData();
-    fd.append("folder", mainIndex >= 0 ? "documents" : "references");
-    fd.append("files", new File([blob], name, { type: "application/pdf" }));
-    const uploaded = await uploadService.upload(fd);
-    const saved = uploaded.data?.[0];
+    let saved;
+    if (direct) {
+      [saved] = await uploadDirect([signedFile], mainIndex >= 0 ? "documents" : "references");
+    } else {
+      const fd = new FormData();
+      fd.append("folder", mainIndex >= 0 ? "documents" : "references");
+      fd.append("files", signedFile);
+      const uploaded = await uploadService.upload(fd);
+      saved = uploaded.data?.[0];
+    }
     if (!saved) throw new Error("Upload មិនបានសម្រេច");
     saved.original_name = saved.original_name || name;
 

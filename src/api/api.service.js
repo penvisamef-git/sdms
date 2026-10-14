@@ -43,6 +43,9 @@ export const groupUserService = createResource("group-user-permission");
 export const homeService = {
   // everything the home screen needs in one call
   summary: (params) => apiClient.get("/home/summary", params),
+  // last saved answers (any age), to paint a screen at once; null when there is none yet
+  peekSummary: (params) => apiClient.peek("/home/summary", params),
+  peekNewDocuments: (params) => apiClient.peek("/home/new-documents", params),
   // paged list of documents with status new. params: month · date_field · box (all|out|in) · all_time · page · limit
   newDocuments: (params) => apiClient.get("/home/new-documents", params),
   // me + office → department → general directorate → unit

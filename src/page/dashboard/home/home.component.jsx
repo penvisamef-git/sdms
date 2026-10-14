@@ -15,6 +15,7 @@ import {
 } from "./homeHelpers";
 import "../master_data/masterdata.style.css";
 import "./home.style.css";
+import { SkHome, SkLines } from "../../util/Skeleton";
 
 // series colours — categorical slots 1-3 (validated set), status of a document: new · process · close
 const STATUS_COLORS = { new: "var(--hm-c1)", process: "var(--hm-c2)", close: "var(--hm-c3)" };
@@ -98,10 +99,17 @@ function NewDocumentsCard({ month, dateField, refreshKey }) {
 
   useEffect(() => {
     const mine = ++seq.current;
+    const params = { month, date_field: dateField, box, page, limit: 5, all_time: allTime ? "true" : undefined };
+    // the last answer for this view on screen at once; the new one replaces it quietly
+    const saved = homeService.peekNewDocuments(params);
+    if (saved) {
+      setRows(saved.data || []);
+      setPagination(saved.pagination || { total: 0, totalPages: 1 });
+    }
     setLoading(true);
     setError("");
     homeService
-      .newDocuments({ month, date_field: dateField, box, page, limit: 5, all_time: allTime ? "true" : undefined })
+      .newDocuments(params)
       .then((res) => {
         if (mine !== seq.current) return;
         setRows(res.data || []);
@@ -141,6 +149,7 @@ function NewDocumentsCard({ month, dateField, refreshKey }) {
 
       <div className={`hm-card-body hm-list-body ${loading ? "is-loading" : ""}`}>
         {error && <EmptyState>{error}</EmptyState>}
+        {!error && rows.length === 0 && loading && <SkLines rows={5} />}
         {!error && rows.length === 0 && !loading && <EmptyState>គ្មានឯកសារថ្មី</EmptyState>}
         {!error && rows.length > 0 && (
           <ul className="hm-list">
@@ -197,7 +206,7 @@ function HomeComponent() {
   const canIn = canAccess(new Auth().getClientLogin(), ACCESS.DOC_IN);
   const [month, setMonth] = useState(currentMonthValue());
   const [dateField, setDateField] = useState("created_date");
-  const [data, setData] = useState(null);
+  const [data, setData] = useState(() => homeService.peekSummary({ month: currentMonthValue(), date_field: "created_date" })?.data || null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
@@ -207,6 +216,9 @@ function HomeComponent() {
 
   useEffect(() => {
     const mine = ++seq.current;
+    // the last answer for this month on screen at once; the new one replaces it quietly
+    const saved = homeService.peekSummary({ month, date_field: dateField });
+    if (saved) setData(saved.data);
     setLoading(true);
     setError("");
     homeService
@@ -286,7 +298,7 @@ function HomeComponent() {
             </select>
           </label>
           <button type="button" className="md-btn md-btn-ghost hm-btn" onClick={() => setRefreshKey((k) => k + 1)} disabled={loading} aria-label="ផ្ទុកឡើងវិញ">
-            <RefreshCw size={16} className={loading ? "md-spin" : ""} />
+            <RefreshCw size={16} />
           </button>
         </div>
       </div>
@@ -300,7 +312,7 @@ function HomeComponent() {
         </div>
       )}
 
-      {!data && !error && <div className="hm-loading">កំពុងផ្ទុក...</div>}
+      {!data && !error && <SkHome />}
 
       {data && (
         <div className={`hm-body ${loading ? "is-loading" : ""}`}>

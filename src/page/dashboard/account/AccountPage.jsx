@@ -5,6 +5,7 @@ import Auth from "../../util/auth";
 import { roleText } from "../user/userRoles";
 import "../master_data/masterdata.style.css";
 import "./account.style.css";
+import { SkLines } from "../../util/Skeleton";
 
 const LEVELS = [
   { key: "unit", label: "អង្គភាព" },
@@ -173,7 +174,7 @@ function AccountPage() {
             <h3>ទីតាំងការងារ</h3>
           </header>
           {loading && !chain ? (
-            <p className="ac-muted">កំពុងផ្ទុក...</p>
+            <SkLines rows={4} />
           ) : (
             <ol className="ac-chain">
               {LEVELS.map((l, i) => {

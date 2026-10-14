@@ -33,6 +33,7 @@ import {themeColors} from './color.script'
 import Auth from "../../util/auth.js"
 import { APP_VERSION_TEXT } from "../../../appInfo";
 import { authService } from "../../../api/api.service";
+import { wipeApiCache } from "../../../api/api.client";
 
 function Theme({ component, currentRoute, routeList }) {
   const auth = new Auth()
@@ -104,6 +105,7 @@ function Theme({ component, currentRoute, routeList }) {
     } catch {
       /* ignore */
     }
+    wipeApiCache();
     auth.removeClientLogin();
     window.location.href = "/login";
   };

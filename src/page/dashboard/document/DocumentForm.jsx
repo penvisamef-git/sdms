@@ -18,6 +18,7 @@ import { formatBytes, idOf } from "./documentHelpers";
 import "../master_data/masterdata.style.css";
 import "./document.style.css";
 import "./documentView.style.css";
+import { SkLines } from "../../util/Skeleton";
 
 // Limits enforced by sdms_api (multer)
 const MAX_FILE_MB = 20;
@@ -446,7 +447,7 @@ function DocumentForm({ documentId }) {
           )}
         </div>
       )}
-      {isEdit && loading && <div className="md-hint">កំពុងផ្ទុកទិន្នន័យ...</div>}
+      {isEdit && loading && <SkLines rows={6} />}
 
       {/* ===== Receivers ===== */}
       {/* one to one: a document that already has a receiver can't be sent to another one */}

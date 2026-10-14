@@ -39,6 +39,7 @@ import {
 import "../master_data/masterdata.style.css";
 import "./document.style.css";
 import "./documentView.style.css";
+import { SkLines } from "../../util/Skeleton";
 
 // A read-only "input": same look as a form field, but it only shows the value
 function ViewField({ label, full, children }) {
@@ -420,7 +421,7 @@ function DocumentViewPage() {
       </div>
 
       {notice && <div className="md-notice md-notice-success">{notice}</div>}
-      {loading && !doc && <div className="md-hint">កំពុងផ្ទុកទិន្នន័យ...</div>}
+      {loading && !doc && <SkLines rows={8} />}
       {error && <div className="md-form-error">{error}</div>}
 
       {doc && (

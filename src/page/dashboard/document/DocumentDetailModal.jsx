@@ -10,6 +10,7 @@ import {
 } from "./documentHelpers";
 import "../master_data/masterdata.style.css";
 import "./document.style.css";
+import { SkLines } from "../../util/Skeleton";
 
 function FileList({ files }) {
   if (!files || files.length === 0) return <span className="md-hint">គ្មានឯកសារ</span>;
@@ -84,7 +85,7 @@ function DocumentDetailModal({ document: row, onClose }) {
           </div>
 
           <div className="md-modal-body">
-            {loading && <div className="md-hint">កំពុងផ្ទុកទិន្នន័យ...</div>}
+            {loading && <SkLines rows={6} />}
             {error && <div className="md-form-error">{error}</div>}
 
             <div className="doc-detail-head">

@@ -6,6 +6,7 @@ import {
 } from "../../../api/api.service";
 import { USER_ROLES, roleText } from "../user/userRoles";
 import "./masterdata.style.css";
+import { SkLines } from "../../util/Skeleton";
 
 const formatDate = (value) => {
   if (!value) return "-";
@@ -158,7 +159,7 @@ function UserDetailModal({ user, onClose, onSaved }) {
           {mode === "view" ? (
             <>
               <div className="md-modal-body">
-                {loading && <div className="md-hint">កំពុងផ្ទុកទិន្នន័យ...</div>}
+                {loading && <SkLines rows={6} />}
                 {loadError && <div className="md-form-error">{loadError}</div>}
                 {notice && <div className="md-notice md-notice-success">{notice}</div>}
 

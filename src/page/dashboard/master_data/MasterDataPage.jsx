@@ -10,6 +10,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import "./masterdata.style.css";
+import { SkTableRows } from "../../util/Skeleton";
 
 const PAGE_SIZES = [10, 20, 50];
 
@@ -283,7 +284,7 @@ function MasterDataPage({
             disabled={loading}
             title="ផ្ទុកឡើងវិញ"
           >
-            <RefreshCw size={16} className={loading ? "md-spin" : ""} />
+            <RefreshCw size={16} />
           </button>
           <button type="button" className="md-btn md-btn-primary" onClick={openCreate}>
             <Plus size={16} />
@@ -307,11 +308,7 @@ function MasterDataPage({
             </thead>
             <tbody>
               {loading && rows.length === 0 && (
-                <tr>
-                  <td colSpan={columns.length + 2} className="md-empty">
-                    កំពុងផ្ទុកទិន្នន័យ...
-                  </td>
-                </tr>
+                <SkTableRows cols={columns.length + 2} rows={6} />
               )}
 
               {!loading && listError && (

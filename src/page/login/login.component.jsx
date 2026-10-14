@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./login.style.css";
 import Auth from "../util/auth";
 import { authService } from "../../api/api.service";
+import { wipeApiCache } from "../../api/api.client";
 import { APP_VERSION_TEXT } from "../../appInfo";
 import { useNavigate } from "react-router-dom";
 
@@ -65,6 +66,7 @@ function LoginComponent() {
     try {
       const json = await authService.login(email, password);
 
+      wipeApiCache(); // nothing of a previous user stays in the cache
       auth.setClientLogin(json.data);
 
       window.location.reload();

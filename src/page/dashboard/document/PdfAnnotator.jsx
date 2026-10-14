@@ -2,7 +2,6 @@ import React, { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, 
 import {
   Download,
   GripHorizontal,
-  LoaderCircle,
   MousePointer2,
   PenLine,
   Pencil,
@@ -937,8 +936,8 @@ function PdfAnnotator({ file, onError, onPlain, onSave, saveBlockedReason, notic
             </span>
           )}
           <button type="button" className="pdfa-btn pdfa-btn-primary" onClick={download} disabled={!doc || exporting || saving || !realCount} title="ទាញយក PDF ដែលមានហត្ថលេខា/កំណត់ចំណាំ">
-            {exporting ? <LoaderCircle size={16} className="pdfa-spin" /> : <Download size={16} />}
-            <span>ទាញយក</span>
+            <Download size={16} />
+            <span>{exporting ? "កំពុងរៀបចំ…" : "ទាញយក"}</span>
           </button>
           {onSave && (
             <button
@@ -951,7 +950,7 @@ function PdfAnnotator({ file, onError, onPlain, onSave, saveBlockedReason, notic
                 (realCount ? "ជំនួសឯកសារដើមដោយឯកសារដែលបានចុះហត្ថលេខា" : "សូមបន្ថែមអក្សរ ឬហត្ថលេខាជាមុន")
               }
             >
-              {saving ? <LoaderCircle size={16} className="pdfa-spin" /> : <Save size={16} />}
+              <Save size={16} />
               <span>{saving ? "កំពុងរក្សាទុក…" : "រក្សាទុក"}</span>
             </button>
           )}
@@ -1001,7 +1000,7 @@ function PdfAnnotator({ file, onError, onPlain, onSave, saveBlockedReason, notic
       >
         {!doc && (
           <div className="pdfa-loading">
-            <LoaderCircle size={22} className="pdfa-spin" />
+            <span className="sk sk-page" aria-hidden="true" />
             <span>កំពុងបើកឯកសារ…</span>
           </div>
         )}

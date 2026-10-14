@@ -18,27 +18,75 @@ function toQueryString(params = {}) {
 }
 
 // ---------------------------------------------------------------------------
-// Small in-memory cache for lists that rarely change (master data, offices, users list, roles).
-//  - kept 60 seconds, and thrown away at once after ANY save / delete (POST, PUT, DELETE)
+// Cache (stale-while-revalidate) for the lists every page asks for again and again.
+//  - master data / users / roles: fresh for 2 minutes; dashboard and document lists: fresh for 20 seconds
+//  - after ANY save / delete (POST, PUT, DELETE) everything is marked "stale": still good to SHOW right away
+//    (see apiClient.peek) but always fetched again, and the server's own short cache is skipped (?_nc=1)
 //  - the same request asked twice at the same time is sent only once
-//  - lives in memory only → a page refresh always starts fresh
-// To stop caching a path, remove it from CACHEABLE.
+//  - a copy is kept in sessionStorage so a page refresh in the same tab can paint the last screen at once;
+//    it is wiped at sign-out / session expiry
+// To stop caching a path, remove it from LONG / SHORT.
 // ---------------------------------------------------------------------------
-const CACHE_MS = 60 * 1000;
-const CACHEABLE = [/^\/master-data\//, /^\/users-all/, /^\/users-roles/, /^\/group-user-permission-all/, /^\/home\/my-office/];
-const cache = new Map(); // key -> { at, json }
+const LONG_MS = 120 * 1000;
+const SHORT_MS = 20 * 1000;
+const LONG = [/^\/master-data\//, /^\/users-all/, /^\/users-roles/, /^\/group-user-permission-all/, /^\/home\/my-office/];
+const SHORT = [/^\/home\/(summary|new-documents)/, /^\/document-transfer\/(inbox|sent)/, /^\/document$/, /^\/document\/[^/]+(\/tracking)?$/];
+const STORE_PREFIX = "sdms:c:";
+const MAX_ENTRIES = 80;
+const cache = new Map(); // key -> { at, json, stale }
 const inflight = new Map(); // key -> Promise
+let serverFreshUntil = 0; // after a change, ask the server to skip its own cache for a while
 
-const isCacheable = (path) => CACHEABLE.some((re) => re.test(path));
+const ttlFor = (path) => (LONG.some((re) => re.test(path)) ? LONG_MS : SHORT.some((re) => re.test(path)) ? SHORT_MS : 0);
 const copy = (json) => (typeof structuredClone === "function" ? structuredClone(json) : JSON.parse(JSON.stringify(json)));
+
+function readStored(key) {
+  try {
+    const raw = window.sessionStorage.getItem(STORE_PREFIX + key);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeStored(key, entry) {
+  try {
+    window.sessionStorage.setItem(STORE_PREFIX + key, JSON.stringify({ at: entry.at, json: entry.json }));
+  } catch {
+    /* storage full or blocked: the memory copy is enough */
+  }
+}
+
+function wipeStored() {
+  try {
+    Object.keys(window.sessionStorage)
+      .filter((k) => k.startsWith(STORE_PREFIX))
+      .forEach((k) => window.sessionStorage.removeItem(k));
+  } catch {
+    /* ignore */
+  }
+}
+
+// "Something changed": keep what we have for display, but fetch again next time.
 export const clearApiCache = () => {
+  cache.forEach((e) => {
+    e.stale = true;
+  });
+  inflight.clear();
+  serverFreshUntil = Date.now() + SHORT_MS;
+};
+
+// Sign-in / sign-out: forget everything, also in sessionStorage.
+export const wipeApiCache = () => {
   cache.clear();
   inflight.clear();
+  serverFreshUntil = 0;
+  wipeStored();
 };
 
 // Session expired / invalid token → clear local login and go back to login page
 function handleUnauthorized() {
-  clearApiCache();
+  wipeApiCache();
   auth.removeClientLogin();
   if (window.location.pathname !== "/login") {
     window.location.href = "/login";
@@ -50,7 +98,7 @@ function handleUnauthorized() {
  * Returns the JSON body ({ success, data, pagination, message }).
  * Throws an Error with the server message when the request fails.
  */
-async function request(path, { method = "GET", body, params, skipAuth = false } = {}) {
+async function request(path, { method = "GET", body, params, skipAuth = false, bypassServerCache = false } = {}) {
   // FormData (file upload): let the browser set the multipart Content-Type + boundary
   const isForm = typeof FormData !== "undefined" && body instanceof FormData;
 
@@ -66,7 +114,7 @@ async function request(path, { method = "GET", body, params, skipAuth = false } 
 
   let res;
   try {
-    res = await fetch(`${API_BASE}${path}${toQueryString(params)}`, {
+    res = await fetch(`${API_BASE}${path}${toQueryString(bypassServerCache ? { ...params, _nc: 1 } : params)}`, {
       method,
       headers,
       body: body !== undefined ? (isForm ? body : JSON.stringify(body)) : undefined,
@@ -91,20 +139,44 @@ async function request(path, { method = "GET", body, params, skipAuth = false } 
   return json;
 }
 
-async function cachedGet(path, params) {
-  if (!isCacheable(path)) return request(path, { params });
+const keyOf = (path, params) => `${path}${toQueryString(params)}`;
 
-  const key = `${path}${toQueryString(params)}`;
+// The last answer we have for this call, however old (null if none). Use it to paint a screen at once.
+function peek(path, params) {
+  if (!ttlFor(path)) return null;
+  const key = keyOf(path, params);
+  let hit = cache.get(key);
+  if (!hit) {
+    const stored = readStored(key);
+    if (stored) {
+      // a copy from before a refresh is shown at once but never served as the final answer
+      hit = { at: stored.at, json: stored.json, stale: true };
+      cache.set(key, hit);
+    }
+  }
+  return hit ? copy(hit.json) : null;
+}
+
+async function cachedGet(path, params) {
+  const ttl = ttlFor(path);
+  if (!ttl) return request(path, { params });
+
+  const key = keyOf(path, params);
   const hit = cache.get(key);
-  if (hit && Date.now() - hit.at < CACHE_MS) return copy(hit.json);
+  if (hit && !hit.stale && Date.now() - hit.at < ttl) return copy(hit.json);
 
   if (!inflight.has(key)) {
-    const p = request(path, { params })
+    const p = request(path, { params, bypassServerCache: Date.now() < serverFreshUntil })
       .then((json) => {
-        cache.set(key, { at: Date.now(), json });
+        if (cache.size > MAX_ENTRIES) cache.clear();
+        const entry = { at: Date.now(), json, stale: false };
+        cache.set(key, entry);
+        writeStored(key, entry);
         return json;
       })
-      .finally(() => inflight.delete(key));
+      .finally(() => {
+        inflight.delete(key);
+      });
     inflight.set(key, p);
   }
   return copy(await inflight.get(key));
@@ -121,6 +193,7 @@ async function mutate(path, options) {
 
 const apiClient = {
   get: (path, params) => cachedGet(path, params),
+  peek,
   post: (path, body, options) => mutate(path, { method: "POST", body, ...options }),
   put: (path, body) => mutate(path, { method: "PUT", body }),
   delete: (path) => mutate(path, { method: "DELETE" }),

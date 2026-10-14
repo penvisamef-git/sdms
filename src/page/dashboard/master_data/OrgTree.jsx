@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import UserDetailModal from "./UserDetailModal";
 import "./masterdata.style.css";
+import { SkLines } from "../../util/Skeleton";
 
 const LEVELS = {
   unit: { label: "អង្គភាព", Icon: Landmark },
@@ -221,13 +222,13 @@ function OrgTree({ fetchTree }) {
             disabled={loading}
             title="ផ្ទុកឡើងវិញ"
           >
-            <RefreshCw size={16} className={loading ? "md-spin" : ""} />
+            <RefreshCw size={16} />
           </button>
         </div>
       </div>
 
       <div className="md-card md-tree">
-        {loading && tree.length === 0 && <div className="md-empty">កំពុងផ្ទុកទិន្នន័យ...</div>}
+        {loading && tree.length === 0 && <div className="md-empty"><SkLines rows={7} /></div>}
 
         {!loading && error && <div className="md-empty md-empty-error">{error}</div>}
 

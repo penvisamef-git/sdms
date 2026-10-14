@@ -6,6 +6,7 @@ import { TRANSFER_STATUS, formatDate, personName } from "./documentHelpers";
 import "../master_data/masterdata.style.css";
 import "./document.style.css";
 import "./documentView.style.css";
+import { SkTableRows } from "../../util/Skeleton";
 
 const PAGE_SIZES = [10, 20, 50];
 const SEARCH_KEYS = ["code_of_document", "number_document", "objective"];
@@ -155,7 +156,7 @@ function DocumentListPage({ box }) {
             disabled={loading}
             title="ផ្ទុកឡើងវិញ"
           >
-            <RefreshCw size={16} className={loading ? "md-spin" : ""} />
+            <RefreshCw size={16} />
           </button>
 
           {!isIn && (
@@ -189,11 +190,7 @@ function DocumentListPage({ box }) {
             </thead>
             <tbody>
               {loading && rows.length === 0 && (
-                <tr>
-                  <td colSpan={colSpan} className="md-empty">
-                    កំពុងផ្ទុកទិន្នន័យ...
-                  </td>
-                </tr>
+                <SkTableRows cols={colSpan} rows={6} />
               )}
 
               {!loading && error && (

@@ -22,6 +22,8 @@ import {
 } from "../../../api/api.service";
 import { needsDirectUpload, uploadDirect } from "../../../api/directUpload";
 import Auth from "../../util/auth";
+import { isBossUser } from "../../util/permission";
+import ConfirmPasswordModal from "./ConfirmPasswordModal";
 import FileViewer from "./FileViewer";
 import ReceiverCard from "./ReceiverCard";
 import SearchSelect from "./SearchSelect";
@@ -100,6 +102,9 @@ function DocumentViewPage() {
   const box = location.pathname.startsWith("/document/out") ? "out" : "in";
 
   const me = new Auth().getClientLogin();
+  // Big Boss: receive · check · sign · comment · return to the sender. Nothing else.
+  const isBoss = isBossUser(me);
+  const backPath = isBoss ? (location.pathname.startsWith("/history") ? "/history" : "/inbox") : `/document/${box}`;
   const myOfficeId = me?.office_id;
   const myUserId = me?._id;
 
@@ -122,6 +127,18 @@ function DocumentViewPage() {
   const [flowId, setFlowId] = useState("");
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState("");
+
+  // a session opened with a deep link asks for the password once (10 minutes) before signing / returning
+  const [askPassword, setAskPassword] = useState(null); // { resolve, reject }
+  const withConfirm = useCallback(async (fn) => {
+    try {
+      return await fn();
+    } catch (err) {
+      if (!err?.response?.need_password) throw err;
+      await new Promise((resolve, reject) => setAskPassword({ resolve, reject }));
+      return fn();
+    }
+  }, []);
 
   // file opened inside the page
   const [preview, setPreview] = useState(null);
@@ -187,7 +204,7 @@ function DocumentViewPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeline, myOfficeId, myUserId]);
 
-  const isOwner = !!doc && (!!me?.is_super_admin || idOf(doc.office_id_open) === myOfficeId);
+  const isOwner = !isBoss && !!doc && (!!me?.is_super_admin || idOf(doc.office_id_open) === myOfficeId);
   // one to one: I can pass the document on (or return / finish it) only once — right after receiving it
   const canAct = mine?.status === "received";
   const isPending = mine?.status === "pending";
@@ -273,7 +290,7 @@ function DocumentViewPage() {
         payload.append("public_id", oldId);
         payload.append("file", signedFile);
       }
-      const res = await documentService.replaceFile(id, payload);
+      const res = await withConfirm(() => documentService.replaceFile(id, payload));
       const d = res.data || {};
       const fresh =
         res.file ||
@@ -347,11 +364,13 @@ function DocumentViewPage() {
   const doReturn = () =>
     run(
       () =>
-        documentTransferService.returnBack(mine._id, {
-          note,
-          ...(flowId ? { status_of_process_id: flowId } : {}),
-        }),
-      "បានរុញត្រឡប់!",
+        withConfirm(() =>
+          documentTransferService.returnBack(mine._id, {
+            note,
+            ...(flowId ? { status_of_process_id: flowId } : {}),
+          }),
+        ),
+      isBoss ? "បានត្រឡប់ឯកសារទៅអ្នកផ្ញើ!" : "បានរុញត្រឡប់!",
     );
 
   const doDone = () => run(() => documentTransferService.done(mine._id, { note }), "បានបញ្ចប់!");
@@ -446,8 +465,38 @@ function DocumentViewPage() {
             </section>
           )}
 
+          {/* ===== 2a. Big Boss holds the document: comment + return to the sender ===== */}
+          {isBoss && canAct && (
+            <section className="md-card doc-section">
+              <h3 className="doc-section-heading">មតិ និងការត្រឡប់ឯកសារ</h3>
+              <div className="md-hint">
+                បើកឯកសារខាងក្រោម ដើម្បីគូស សរសេរ ឬចុះហត្ថលេខា រួចចុច «រក្សាទុក» ក្នុងឧបករណ៍ PDF។
+                បន្ទាប់មកសរសេរមតិ ហើយត្រឡប់ទៅ <strong>{personName(doc.send_from_user_id) || "អ្នកផ្ញើ"}</strong>។
+              </div>
+              <div className="doc-grid doc-action-note">
+                <div className="md-field md-field-full">
+                  <label>មតិ / ការណែនាំ</label>
+                  <textarea
+                    rows={3}
+                    placeholder="បញ្ចូលមតិរបស់លោក"
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    disabled={busy}
+                  />
+                </div>
+              </div>
+              {actionError && <div className="md-form-error">{actionError}</div>}
+              <div className="doc-action-buttons">
+                <button type="button" className="md-btn md-btn-primary" onClick={doReturn} disabled={busy}>
+                  <CornerUpLeft size={16} />
+                  {busy ? "កំពុងដំណើរការ..." : "ត្រឡប់ទៅអ្នកផ្ញើ"}
+                </button>
+              </div>
+            </section>
+          )}
+
           {/* ===== 2. I hold the document: forward / return / finish ===== */}
-          {canAct && (
+          {!isBoss && canAct && (
             <ReceiverCard
               orgTree={orgTree}
               users={users}
@@ -617,11 +666,24 @@ function DocumentViewPage() {
 
       {/* ===== Actions ===== */}
       <div className="doc-actions">
-        <button type="button" className="md-btn md-btn-ghost" onClick={() => navigate(`/document/${box}`)}>
+        <button type="button" className="md-btn md-btn-ghost" onClick={() => navigate(backPath)}>
           <ArrowLeft size={16} />
           ត្រឡប់ក្រោយ
         </button>
       </div>
+
+      {askPassword && (
+        <ConfirmPasswordModal
+          onDone={() => {
+            askPassword.resolve();
+            setAskPassword(null);
+          }}
+          onCancel={() => {
+            askPassword.reject(new Error("បានបោះបង់ការបញ្ជាក់ពាក្យសម្ងាត់"));
+            setAskPassword(null);
+          }}
+        />
+      )}
     </div>
   );
 }

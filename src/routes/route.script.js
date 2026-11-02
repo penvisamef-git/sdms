@@ -13,6 +13,8 @@ import DocumentCreateComponent from "../page/dashboard/document/DocumentCreateCo
 import DocumentEditComponent from "../page/dashboard/document/DocumentEditComponent";
 import DocumentViewPage from "../page/dashboard/document/DocumentViewPage";
 import AccountPage from "../page/dashboard/account/AccountPage";
+import BossInboxComponent from "../page/dashboard/document/BossInboxComponent";
+import BossHistoryComponent from "../page/dashboard/document/BossHistoryComponent";
 import { ACCESS } from "../page/util/permission";
 import {
     LayoutDashboard,
@@ -53,6 +55,54 @@ class RouteScript {
     routeDashboard() {
         return [
             {
+                is_show_sidebar: true,
+                is_can_access_route: true,
+                name: "ឯកសារចូល",
+                icon: <Inbox />,
+                component: <BossInboxComponent />,
+                url: 'inbox',
+                access: ACCESS.BOSS,
+                type: 'index',
+                breadcrumb: [{ name: "ឯកសារចូល", url: null }],
+                child: []
+            },
+            {
+                is_show_sidebar: true,
+                is_can_access_route: true,
+                name: "ប្រវត្តិ",
+                icon: <FileBarChart />,
+                component: <BossHistoryComponent />,
+                url: 'history',
+                access: ACCESS.BOSS,
+                type: 'index',
+                breadcrumb: [{ name: "ប្រវត្តិ", url: null }],
+                child: []
+            },
+            {
+                is_show_sidebar: false,
+                is_can_access_route: true,
+                name: "ពិនិត្យឯកសារ",
+                icon: <FileText />,
+                component: <DocumentViewPage />,
+                url: 'inbox/view/:id',
+                access: ACCESS.BOSS,
+                type: 'index',
+                breadcrumb: [{ name: "ឯកសារចូល", url: "inbox" }, { name: "ពិនិត្យឯកសារ", url: null }],
+                child: []
+            },
+            {
+                is_show_sidebar: false,
+                is_can_access_route: true,
+                name: "ពិនិត្យឯកសារ",
+                icon: <FileText />,
+                component: <DocumentViewPage />,
+                url: 'history/view/:id',
+                access: ACCESS.BOSS,
+                type: 'index',
+                breadcrumb: [{ name: "ប្រវត្តិ", url: "history" }, { name: "ពិនិត្យឯកសារ", url: null }],
+                child: []
+            },
+            {
 
                 is_show_sidebar: true,
                 is_can_access_route: true,
@@ -60,7 +110,7 @@ class RouteScript {
                 icon: <LayoutDashboard />,
                 component: <HomeComponent />,
                 url: 'home',
-                access: ACCESS.ALL,
+                access: ACCESS.STAFF,
                 type: 'index',
                 breadcrumb: [
 

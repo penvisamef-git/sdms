@@ -9,9 +9,13 @@ import { userService } from "../../api/api.service";
  *   DOC_IN  incoming documents   → DOC_IN, DOC_BOTH, SUPER
  *   DOC_OUT outgoing documents   → DOC_OUT, DOC_BOTH, SUPER
  *   SUPER   master data, organization, users → SUPER only
+ *   STAFF   dashboard (everybody except the Big Boss)
+ *   BOSS    Big Boss only: inbox + history
  */
 export const ACCESS = {
   ALL: "all",
+  STAFF: "staff",
+  BOSS: "boss",
   DOC_IN: "doc_in",
   DOC_OUT: "doc_out",
   SUPER: "super",
@@ -23,11 +27,20 @@ export function roleOf(user) {
   return roleText(user?.role);
 }
 
+export const isBossUser = (user) => roleOf(user) === ROLE.BOSS;
+
+// where a signed-in user starts (the Big Boss has no dashboard)
+export const homePathFor = (user) => (isBossUser(user) ? "/inbox" : "/home");
+
 export function canAccess(user, access = ACCESS.SUPER) {
   const role = roleOf(user);
+  // the Big Boss sees his own two screens and his account — nothing else
+  if (role === ROLE.BOSS) return access === ACCESS.BOSS || access === ACCESS.ALL;
+  if (access === ACCESS.BOSS) return false;
   if (role === ROLE.SUPER) return true;
   switch (access) {
     case ACCESS.ALL:
+    case ACCESS.STAFF:
       return true;
     case ACCESS.DOC_IN:
       return role === ROLE.DOC_IN || role === ROLE.DOC_BOTH;

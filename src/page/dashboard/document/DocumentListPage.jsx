@@ -17,8 +17,11 @@ const SEARCH_KEYS = ["code_of_document", "number_document", "objective"];
  *   box="out" → documents my office created (GET /document?box=out) — ចេញ
  * Every row opens the detail page (…/view/:id): receive · forward · return · done · tracking.
  */
-function DocumentListPage({ box }) {
+function DocumentListPage({ box, boss }) {
   const isIn = box === "in";
+  // Big Boss: boss="inbox" → waiting for him · boss="history" → already returned
+  const viewBase = boss ? `/${boss}` : `/document/${box}`;
+  const bossStatus = boss === "inbox" ? "pending,received" : boss === "history" ? "returned,forwarded,done" : null;
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -39,7 +42,7 @@ function DocumentListPage({ box }) {
     setError("");
     try {
       const res = isIn
-        ? await documentTransferService.inbox({ page, limit, status: status || undefined })
+        ? await documentTransferService.inbox({ page, limit, status: bossStatus || status || undefined })
         : await documentService.list({
             box: "out",
             page,
@@ -55,7 +58,7 @@ function DocumentListPage({ box }) {
     } finally {
       setLoading(false);
     }
-  }, [isIn, page, limit, search, status]);
+  }, [isIn, page, limit, search, status, bossStatus]);
 
   useEffect(() => {
     loadData();
@@ -102,7 +105,7 @@ function DocumentListPage({ box }) {
   };
 
   const openDetail = (docId) => {
-    if (docId) navigate(`/document/${box}/view/${docId}`);
+    if (docId) navigate(`${viewBase}/view/${docId}`);
   };
 
   const totalPages = Math.max(pagination.totalPages || 1, 1);
@@ -131,7 +134,7 @@ function DocumentListPage({ box }) {
         </div>
 
         <div className="doc-filters">
-          {isIn && (
+          {isIn && !boss && (
             <select
               value={status}
               onChange={(e) => {
@@ -182,7 +185,7 @@ function DocumentListPage({ box }) {
                 <th>លេខកូដ</th>
                 <th>លេខឯកសារ</th>
                 <th>ប្រភេទឯកសារ</th>
-                <th>{isIn ? "អង្គភាពផ្ញើ" : "អង្គភាពទទួល"}</th>
+                <th>{boss ? "អ្នកផ្ញើ" : isIn ? "អង្គភាពផ្ញើ" : "អង្គភាពទទួល"}</th>
                 {isIn && <th>កាលបរិច្ឆេទផ្ញើ</th>}
                 {isIn && <th>ស្ថានភាព</th>}
                 <th className="md-col-actions">សកម្មភាព</th>
@@ -206,7 +209,9 @@ function DocumentListPage({ box }) {
                   <td colSpan={colSpan} className="md-empty">
                     {search || status
                       ? "រកមិនឃើញទិន្នន័យដែលត្រូវនឹងការស្វែងរក"
-                      : "មិនទាន់មានឯកសារ"}
+                      : boss === "inbox"
+                        ? "មិនមានឯកសារត្រូវពិនិត្យទេ"
+                        : "មិនទាន់មានឯកសារ"}
                   </td>
                 </tr>
               )}
@@ -220,7 +225,11 @@ function DocumentListPage({ box }) {
                       <td className="doc-code">{d?.code_of_document || "-"}</td>
                       <td>{d?.number_document || "-"}</td>
                       <td>{d?.document_type_id?.name || "-"}</td>
-                      <td>{t.from_office_id?.name || d?.office_id_open?.name || "-"}</td>
+                      <td>
+                        {boss
+                          ? personName(t.from_user_id) || t.from_office_id?.name || "-"
+                          : t.from_office_id?.name || d?.office_id_open?.name || "-"}
+                      </td>
                       <td>{formatDate(t.date_sent)}</td>
                       <td>{badge(TRANSFER_STATUS, t.status)}</td>
                       <td className="md-col-actions" onClick={(e) => e.stopPropagation()}>

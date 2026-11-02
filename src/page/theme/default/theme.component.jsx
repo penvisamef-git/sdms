@@ -132,7 +132,9 @@ function Theme({ component, currentRoute, routeList }) {
     for (let row of routeList) {
       // Check parent route
       const parentRoute = "/" + row.url;
-      if (cleanURL === parentRoute) {
+      // top-level detail pages with an :id (e.g. /inbox/view/:id)
+      const dynamicTop = row.url && row.url.includes("/view/:id") && new RegExp("^/" + row.url.replace(":id", "[^/]+") + "$").test(cleanURL);
+      if (cleanURL === parentRoute || dynamicTop) {
         // Check if route has breadcrumb
         if (row.breadcrumb && row.breadcrumb.length > 0) {
           return row.breadcrumb;
@@ -226,7 +228,7 @@ function Theme({ component, currentRoute, routeList }) {
       urlRoute = urlRoute.slice(0, -1);
     }
 
-    if (currentURL === urlRoute) {
+    if (currentURL === urlRoute || (urlRoute && currentURL.startsWith(urlRoute + "/view/"))) {
       isActive = "active";
     }
 

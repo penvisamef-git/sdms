@@ -25,6 +25,15 @@ export const authService = {
   testLoggedIn: () => apiClient.get("/auth/test-logged-in"),
   // end THIS device's session on the server (the token stops working)
   logout: () => apiClient.post("/auth/logout", {}),
+  // ---- Big Boss: personal deep links ----
+  // sign in with the token of a link  (https://<web>/auto-login#t=<token>)
+  exchangeLink: (token) => apiClient.post("/auth/link/exchange", { token }, { skipAuth: true }),
+  links: () => apiClient.get("/auth/links"),
+  // { label, days: 7|30|90, once, password } → { data, token, url }  (the url is shown only this once)
+  createLink: (data) => apiClient.post("/auth/links", data),
+  revokeLink: (id) => apiClient.delete(`/auth/links/${id}`),
+  // a session opened with a link must confirm the password before it signs or returns a document (10 min)
+  confirmPassword: (password) => apiClient.post("/auth/confirm-password", { password }),
 };
 
 // ================= User =================

@@ -5,9 +5,10 @@ export const ROLE = {
   DOC_IN: "អ្នកគ្រប់គ្រងឯកសារចូល", // dashboard + incoming documents + my account
   DOC_OUT: "អ្នកគ្រប់គ្រងឯកសារចេញ", // dashboard + outgoing documents + my account
   DOC_BOTH: "អ្នកគ្រប់គ្រងឯកសារចេញ/ចូល", // dashboard + incoming + outgoing + my account
+  BOSS: "ថ្នាក់ដឹកនាំ", // Big Boss (only one): inbox + history + my account. Checks, signs and returns documents
 };
 
-export const USER_ROLES = [ROLE.SUPER, ROLE.DOC_IN, ROLE.DOC_OUT, ROLE.DOC_BOTH];
+export const USER_ROLES = [ROLE.SUPER, ROLE.DOC_IN, ROLE.DOC_OUT, ROLE.DOC_BOTH, ROLE.BOSS];
 
 export const ROLE_OPTIONS = USER_ROLES.map((r) => ({ value: r, label: r }));
 

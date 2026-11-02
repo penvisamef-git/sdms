@@ -5,7 +5,8 @@ import LoginComponent from "../page/login/login.component";
 import ThemeComponent from "../page/theme/default/theme.component";
 import RouteScript from "./route.script";
 import Auth from "../page/util/auth";
-import { filterRoutes, refreshLoginRole } from "../page/util/permission";
+import AutoLoginPage from "../page/login/AutoLoginPage";
+import { filterRoutes, homePathFor, refreshLoginRole } from "../page/util/permission";
 
 function RouteComponent() {
   //**************** Declaration ****************//
@@ -34,7 +35,7 @@ function RouteComponent() {
         path="/"
         element={
           isLogin
-            ? <Navigate to="/home" replace />
+            ? <Navigate to={homePathFor(isLogin)} replace />
             : <LoginComponent />
         }
       />,
@@ -51,7 +52,7 @@ function RouteComponent() {
         path="/login"
         element={
           isLogin
-            ? <Navigate to="/home" replace />
+            ? <Navigate to={homePathFor(isLogin)} replace />
             : <LoginComponent />
         }
       />
@@ -63,7 +64,7 @@ function RouteComponent() {
      const isLogin = auth.getClientLogin();
     return <Route key="404" path="*" element={
           isLogin
-            ? <Navigate to="/home" replace />
+            ? <Navigate to={homePathFor(isLogin)} replace />
             : <LoginComponent />
         } />;
   };
@@ -149,6 +150,8 @@ function RouteComponent() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Big Boss deep link: https://<web>/auto-login#t=<token> (works signed in or not) */}
+        <Route key="/auto-login" path="/auto-login" element={<AutoLoginPage />} />
         {routeLogin()}
         {routePublic()}
         {routeDashboardWithTheme()}

@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Building2, Eye, EyeOff, KeyRound, Mail, Phone, Shield, User } from "lucide-react";
 import { homeService, userService } from "../../../api/api.service";
 import Auth from "../../util/auth";
-import { roleText } from "../user/userRoles";
+import { ROLE, roleText } from "../user/userRoles";
+import MyLinksCard from "./MyLinksCard";
 import "../master_data/masterdata.style.css";
 import "./account.style.css";
 import { SkLines } from "../../util/Skeleton";
@@ -65,9 +66,12 @@ function AccountPage() {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
 
+  const isBoss = roleText(login.role) === ROLE.BOSS;
+
   useEffect(() => {
     let alive = true;
-    Promise.allSettled([userService.profile(), homeService.myOffice()]).then(([p, o]) => {
+    // the Big Boss has no office (and may not call that endpoint)
+    Promise.allSettled([userService.profile(), isBoss ? Promise.resolve(null) : homeService.myOffice()]).then(([p, o]) => {
       if (!alive) return;
       if (p.status === "fulfilled") setProfile(unwrapUser(p.value));
       if (o.status === "fulfilled") setChain(o.value?.data || null);
@@ -76,7 +80,7 @@ function AccountPage() {
     return () => {
       alive = false;
     };
-  }, []);
+  }, [isBoss]);
 
   useEffect(() => {
     if (!notice) return;
@@ -168,7 +172,8 @@ function AccountPage() {
           </dl>
         </section>
 
-        {/* ---------- where I work ---------- */}
+        {/* ---------- where I work (not for the Big Boss) ---------- */}
+        {!isBoss && (
         <section className="md-card ac-card">
           <header className="ac-card-head">
             <h3>ទីតាំងការងារ</h3>
@@ -193,6 +198,10 @@ function AccountPage() {
             </ol>
           )}
         </section>
+        )}
+
+        {/* ---------- Big Boss: my deep links ---------- */}
+        {isBoss && <MyLinksCard />}
 
         {/* ---------- password ---------- */}
         <section className="md-card ac-card ac-wide">

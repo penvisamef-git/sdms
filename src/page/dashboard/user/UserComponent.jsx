@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { KeyRound, X } from "lucide-react";
+import { KeyRound, UserCheck, X } from "lucide-react";
 import MasterDataPage from "../master_data/MasterDataPage";
 import "../master_data/masterdata.style.css";
 import { userService, officeService } from "../../../api/api.service";
-import { ROLE_OPTIONS, roleText } from "./userRoles";
+import { ROLE, ROLE_OPTIONS, roleText } from "./userRoles";
 import Auth from "../../util/auth";
 
 const fullName = (row) => `${row.firstname || ""} ${row.lastname || ""}`.trim();
@@ -37,6 +37,51 @@ function UserComponent() {
   const [resetError, setResetError] = useState("");
   const [resetSaving, setResetSaving] = useState(false);
   const [notice, setNotice] = useState(null);
+
+  // ---------------- Big Boss: who may send to him ----------------
+  const [senderTarget, setSenderTarget] = useState(null);
+  const [senderUsers, setSenderUsers] = useState([]);
+  const [senderPicked, setSenderPicked] = useState([]);
+  const [senderSearch, setSenderSearch] = useState("");
+  const [senderError, setSenderError] = useState("");
+  const [senderSaving, setSenderSaving] = useState(false);
+
+  const openSenders = async (row) => {
+    setSenderTarget(row);
+    setSenderPicked((row.allowed_sender_ids || []).map((x) => String(x?._id || x)));
+    setSenderSearch("");
+    setSenderError("");
+    try {
+      const res = await userService.all();
+      setSenderUsers((res.data || []).filter((u) => u.role !== ROLE.BOSS && u._id !== row._id));
+    } catch (err) {
+      setSenderUsers([]);
+      setSenderError(err.message);
+    }
+  };
+
+  const toggleSender = (id) =>
+    setSenderPicked((list) => (list.includes(id) ? list.filter((x) => x !== id) : [...list, id]));
+
+  const saveSenders = async (e) => {
+    e.preventDefault();
+    setSenderError("");
+    setSenderSaving(true);
+    try {
+      const res = await userService.update(senderTarget._id, { allowed_sender_ids: senderPicked });
+      setNotice({ type: "success", text: res.message || "បានរក្សាទុកបញ្ជីអ្នកអាចផ្ញើ!" });
+      setSenderTarget(null);
+    } catch (err) {
+      setSenderError(err.message);
+    } finally {
+      setSenderSaving(false);
+    }
+  };
+
+  const shownSenders = senderUsers.filter((u) => {
+    const kw = senderSearch.trim().toLowerCase();
+    return !kw || `${fullName(u)} ${u.email || ""} ${u.office_id?.name || ""}`.toLowerCase().includes(kw);
+  });
 
   const loadOptions = useCallback(async () => {
     try {
@@ -76,9 +121,9 @@ function UserComponent() {
       { key: "job_title", label: "មុខតំណែង", placeholder: "បញ្ចូលមុខតំណែង" },
       {
         key: "office_id",
-        label: "ការិយាល័យ",
+        label: "ការិយាល័យ (មិនត្រូវការសម្រាប់ថ្នាក់ដឹកនាំ)",
         type: "select",
-        required: true,
+        required: false,
         placeholder: "-- ជ្រើសរើសការិយាល័យ --",
         options: offices.map((o) => ({
           value: o._id,
@@ -149,16 +194,79 @@ function UserComponent() {
         canDelete={(row) => row._id !== currentUserId}
         wide
         extraActions={(row) => (
-          <button
-            type="button"
-            className="md-icon-btn"
-            onClick={() => openReset(row)}
-            title="កំណត់ពាក្យសម្ងាត់ថ្មី"
-          >
-            <KeyRound size={15} />
-          </button>
+          <>
+            {roleText(row.role) === ROLE.BOSS && (
+              <button
+                type="button"
+                className="md-icon-btn"
+                onClick={() => openSenders(row)}
+                title="អ្នកដែលអាចផ្ញើមកថ្នាក់ដឹកនាំ"
+              >
+                <UserCheck size={15} />
+              </button>
+            )}
+            <button
+              type="button"
+              className="md-icon-btn"
+              onClick={() => openReset(row)}
+              title="កំណត់ពាក្យសម្ងាត់ថ្មី"
+            >
+              <KeyRound size={15} />
+            </button>
+          </>
         )}
       />
+
+      {senderTarget && (
+        <div className="md-modal-backdrop" onMouseDown={() => !senderSaving && setSenderTarget(null)}>
+          <form className="md-modal md-modal-sm" onSubmit={saveSenders} onMouseDown={(e) => e.stopPropagation()}>
+            <div className="md-modal-header">
+              <h3>អ្នកដែលអាចផ្ញើមកថ្នាក់ដឹកនាំ</h3>
+              <button type="button" className="md-icon-btn" onClick={() => setSenderTarget(null)} aria-label="Close">
+                <X size={18} />
+              </button>
+            </div>
+            <div className="md-modal-body">
+              <p>
+                <strong>{fullName(senderTarget)}</strong> — មានតែអ្នកក្នុងបញ្ជីនេះទេ ដែលមើលឃើញ និងផ្ញើឯកសារមកគាត់បាន។
+              </p>
+              <div className="md-field">
+                <input
+                  type="text"
+                  placeholder="ស្វែងរកឈ្មោះ អ៊ីមែល ឬការិយាល័យ..."
+                  value={senderSearch}
+                  onChange={(e) => setSenderSearch(e.target.value)}
+                  autoFocus
+                />
+              </div>
+              <div style={{ maxHeight: 280, overflowY: "auto", border: "1px solid #e5e7eb", borderRadius: 8 }}>
+                {shownSenders.length === 0 && <div className="md-hint" style={{ padding: 12 }}>គ្មានអ្នកប្រើប្រាស់</div>}
+                {shownSenders.map((u) => (
+                  <label key={u._id} style={{ display: "flex", gap: 10, alignItems: "center", padding: "8px 12px", cursor: "pointer" }}>
+                    <input type="checkbox" checked={senderPicked.includes(u._id)} onChange={() => toggleSender(u._id)} />
+                    <span>
+                      {fullName(u) || u.email}
+                      <small style={{ display: "block", opacity: 0.65 }}>
+                        {[u.email, u.office_id?.name].filter(Boolean).join(" · ")}
+                      </small>
+                    </span>
+                  </label>
+                ))}
+              </div>
+              <div className="md-hint">បានជ្រើសរើស {senderPicked.length} នាក់</div>
+              {senderError && <div className="md-form-error">{senderError}</div>}
+            </div>
+            <div className="md-modal-footer">
+              <button type="button" className="md-btn md-btn-ghost" onClick={() => setSenderTarget(null)} disabled={senderSaving}>
+                បោះបង់
+              </button>
+              <button type="submit" className="md-btn md-btn-primary" disabled={senderSaving}>
+                {senderSaving ? "កំពុងរក្សាទុក..." : "រក្សាទុក"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
 
       {resetTarget && (
         <div className="md-modal-backdrop" onMouseDown={closeReset}>

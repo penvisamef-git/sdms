@@ -27,13 +27,13 @@ export const authService = {
   logout: () => apiClient.post("/auth/logout", {}),
   // ---- Big Boss: personal deep links ----
   // sign in with the token of a link  (https://<web>/auto-login#t=<token>)
-  exchangeLink: (token) => apiClient.post("/auth/link/exchange", { token }, { skipAuth: true }),
+  exchangeLink: (token) => apiClient.post("/auth/link/exchange", { token, client: "web" }, { skipAuth: true }),
   links: () => apiClient.get("/auth/links"),
   // { label, days: 7|30|90, once, password } → { data, token, url }  (the url is shown only this once)
   createLink: (data) => apiClient.post("/auth/links", data),
   revokeLink: (id) => apiClient.delete(`/auth/links/${id}`),
-  // super admin: a new link FOR the Big Boss { user_id, label, days, once, reset } → { token, url }
-  createBossLink: (data) => apiClient.post("/auth/links/for-boss", data),
+  // super admin: a new link FOR any user (not a super admin) { user_id, label, days, once, reset } → { token, url, app_url }
+  createUserLink: (data) => apiClient.post("/auth/links/for-user", data),
   // a session opened with a link must confirm the password before it signs or returns a document (10 min)
   confirmPassword: (password) => apiClient.post("/auth/confirm-password", { password }),
 };

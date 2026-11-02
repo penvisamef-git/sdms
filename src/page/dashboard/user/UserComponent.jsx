@@ -90,6 +90,7 @@ function UserComponent() {
   const [linkOnce, setLinkOnce] = useState(false);
   const [linkReset, setLinkReset] = useState(true);
   const [linkUrl, setLinkUrl] = useState("");
+  const [linkAppUrl, setLinkAppUrl] = useState("");
   const [linkCopied, setLinkCopied] = useState(false);
   const [linkError, setLinkError] = useState("");
   const [linkSaving, setLinkSaving] = useState(false);
@@ -101,6 +102,7 @@ function UserComponent() {
     setLinkOnce(false);
     setLinkReset(true);
     setLinkUrl("");
+    setLinkAppUrl("");
     setLinkCopied(false);
     setLinkError("");
   };
@@ -110,7 +112,7 @@ function UserComponent() {
     setLinkError("");
     setLinkSaving(true);
     try {
-      const res = await authService.createBossLink({
+      const res = await authService.createUserLink({
         user_id: linkTarget._id,
         label: linkLabel,
         days: linkDays,
@@ -118,6 +120,7 @@ function UserComponent() {
         reset: linkReset,
       });
       setLinkUrl(res.url);
+      setLinkAppUrl(res.app_url || "");
     } catch (err) {
       setLinkError(err.message);
     } finally {
@@ -246,7 +249,7 @@ function UserComponent() {
         wide
         extraActions={(row) => (
           <>
-            {roleText(row.role) === ROLE.BOSS && (
+            {roleText(row.role) !== ROLE.SUPER && !row.is_super_admin && (
               <button
                 type="button"
                 className="md-icon-btn"
@@ -319,13 +322,18 @@ function UserComponent() {
                 <div className="md-notice md-notice-success" style={{ wordBreak: "break-all" }}>
                   <strong>Link ថ្មី (បង្ហាញតែម្តងនេះប៉ុណ្ណោះ — សូមចម្លងឥឡូវ):</strong>
                   <div style={{ margin: "8px 0", fontFamily: "monospace", fontSize: 13, userSelect: "all" }}>{linkUrl}</div>
+                  {linkAppUrl && (
+                    <div style={{ fontSize: 12, opacity: 0.75, marginBottom: 8 }}>
+                      សម្រាប់ App (ពេល App គាំទ្រ): <span style={{ fontFamily: "monospace", userSelect: "all" }}>{linkAppUrl}</span>
+                    </div>
+                  )}
                   <button type="button" className="md-btn md-btn-ghost doc-btn-sm" onClick={copyLink}>
                     {linkCopied ? <Check size={14} /> : <Copy size={14} />}
                     {linkCopied ? "បានចម្លង" : "ចម្លង"}
                   </button>
                 </div>
               )}
-              <div className="md-hint">អ្នកណាមាន Link នេះ អាចចូលជាថ្នាក់ដឹកនាំបាន។ សូមផ្ញើតាមបណ្តាញសុវត្ថិភាព។</div>
+              <div className="md-hint">អ្នកណាមាន Link នេះ អាចចូលជាអ្នកប្រើប្រាស់នេះបាន។ សូមផ្ញើតាមបណ្តាញសុវត្ថិភាព។</div>
               {linkError && <div className="md-form-error">{linkError}</div>}
             </div>
             <div className="md-modal-footer">

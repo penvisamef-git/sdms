@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { authService } from "../../api/api.service";
 import { wipeApiCache } from "../../api/api.client";
 import Auth from "../util/auth";
+import { homePathFor } from "../util/permission";
 import "./login.style.css";
 
 // The token is read ONCE from the address (#t=...) and removed from it right away, so it never stays in the
@@ -32,7 +33,7 @@ function AutoLoginPage() {
       .then((json) => {
         wipeApiCache(); // nothing of a previous user stays in the cache
         new Auth().setClientLogin(json.data);
-        window.location.replace("/inbox");
+        window.location.replace(homePathFor(json.data)); // Big Boss → /inbox, everybody else → /home
       })
       .catch((err) => {
         if (alive) setError(err.message || "Link នេះមិនអាចប្រើបានទេ!");

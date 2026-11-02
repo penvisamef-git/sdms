@@ -4,16 +4,16 @@
 
 .hm-page {
   --hm-accent: var(--md-primary);
-  --hm-surface: #ffffff;
+  --hm-surface: var(--color-surface-card, #ffffff);
   --hm-c1: #2a78d6; /* categorical slot 1 — blue   */
   --hm-c2: #eb6834; /* categorical slot 2 — orange */
   --hm-c3: #20a878; /* categorical slot 3 — aqua   */
   --hm-other: #b4bfbc; /* de-emphasis / "other" */
-  --hm-grid: #e9edeb;
-  --hm-axis: #c6cfcc;
+  --hm-grid: var(--color-surface-border, #e9edeb);
+  --hm-axis: var(--color-surface-borderStrong, #c6cfcc);
   --hm-ink: var(--md-text);
-  --hm-ink2: #56625f;
-  --hm-muted: #7a817e;
+  --hm-ink2: var(--color-surface-muted, #56625f);
+  --hm-muted: var(--color-surface-muted, #7a817e);
   gap: 14px;
 }
 
@@ -337,7 +337,7 @@
   display: inline-flex;
   padding: 2px;
   border-radius: 8px;
-  background: #eef1f0;
+  background: var(--color-surface-raised, #eef1f0);
 }
 
 .hm-seg button {
@@ -521,7 +521,7 @@ line.hm-axis {
 .hm-stack-empty {
   flex: 1;
   border-radius: 4px;
-  background: #eef1f0;
+  background: var(--color-surface-raised, #eef1f0);
 }
 
 .hm-seg-part {
@@ -752,7 +752,7 @@ line.hm-axis {
 }
 
 .hm-pill-in {
-  background: #eef0ef;
+  background: var(--color-surface-raised, #eef0ef);
   color: var(--hm-ink2);
 }
 

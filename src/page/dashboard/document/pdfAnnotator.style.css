@@ -157,7 +157,7 @@
   overflow: auto;
   border: 1px solid var(--md-border);
   border-radius: 0 0 8px 8px;
-  background: #e6eae9;
+  background: var(--color-surface-border, #e6eae9);
 }
 
 .pdfa-pages {

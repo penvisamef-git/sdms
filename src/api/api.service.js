@@ -32,6 +32,8 @@ export const authService = {
   // { label, days: 7|30|90, once, password } → { data, token, url }  (the url is shown only this once)
   createLink: (data) => apiClient.post("/auth/links", data),
   revokeLink: (id) => apiClient.delete(`/auth/links/${id}`),
+  // super admin: a new link FOR the Big Boss { user_id, label, days, once, reset } → { token, url }
+  createBossLink: (data) => apiClient.post("/auth/links/for-boss", data),
   // a session opened with a link must confirm the password before it signs or returns a document (10 min)
   confirmPassword: (password) => apiClient.post("/auth/confirm-password", { password }),
 };

@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { KeyRound, UserCheck, X } from "lucide-react";
+import { Check, Copy, KeyRound, Link2, UserCheck, X } from "lucide-react";
 import MasterDataPage from "../master_data/MasterDataPage";
 import "../master_data/masterdata.style.css";
-import { userService, officeService } from "../../../api/api.service";
+import { authService, userService, officeService } from "../../../api/api.service";
 import { ROLE, ROLE_OPTIONS, roleText } from "./userRoles";
 import Auth from "../../util/auth";
 
@@ -82,6 +82,57 @@ function UserComponent() {
     const kw = senderSearch.trim().toLowerCase();
     return !kw || `${fullName(u)} ${u.email || ""} ${u.office_id?.name || ""}`.toLowerCase().includes(kw);
   });
+
+  // ---------------- Big Boss: new deep link (made by the admin) ----------------
+  const [linkTarget, setLinkTarget] = useState(null);
+  const [linkLabel, setLinkLabel] = useState("");
+  const [linkDays, setLinkDays] = useState(90);
+  const [linkOnce, setLinkOnce] = useState(false);
+  const [linkReset, setLinkReset] = useState(true);
+  const [linkUrl, setLinkUrl] = useState("");
+  const [linkCopied, setLinkCopied] = useState(false);
+  const [linkError, setLinkError] = useState("");
+  const [linkSaving, setLinkSaving] = useState(false);
+
+  const openLink = (row) => {
+    setLinkTarget(row);
+    setLinkLabel("");
+    setLinkDays(90);
+    setLinkOnce(false);
+    setLinkReset(true);
+    setLinkUrl("");
+    setLinkCopied(false);
+    setLinkError("");
+  };
+
+  const makeLink = async (e) => {
+    e.preventDefault();
+    setLinkError("");
+    setLinkSaving(true);
+    try {
+      const res = await authService.createBossLink({
+        user_id: linkTarget._id,
+        label: linkLabel,
+        days: linkDays,
+        once: linkOnce,
+        reset: linkReset,
+      });
+      setLinkUrl(res.url);
+    } catch (err) {
+      setLinkError(err.message);
+    } finally {
+      setLinkSaving(false);
+    }
+  };
+
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(linkUrl);
+      setLinkCopied(true);
+    } catch {
+      setLinkError("ចម្លងមិនបាន សូមជ្រើសអត្ថបទ រួចចម្លងដោយដៃ");
+    }
+  };
 
   const loadOptions = useCallback(async () => {
     try {
@@ -199,6 +250,16 @@ function UserComponent() {
               <button
                 type="button"
                 className="md-icon-btn"
+                onClick={() => openLink(row)}
+                title="បង្កើត Link ចូលថ្មី (Deep link)"
+              >
+                <Link2 size={15} />
+              </button>
+            )}
+            {roleText(row.role) === ROLE.BOSS && (
+              <button
+                type="button"
+                className="md-icon-btn"
                 onClick={() => openSenders(row)}
                 title="អ្នកដែលអាចផ្ញើមកថ្នាក់ដឹកនាំ"
               >
@@ -216,6 +277,70 @@ function UserComponent() {
           </>
         )}
       />
+
+      {linkTarget && (
+        <div className="md-modal-backdrop" onMouseDown={() => !linkSaving && setLinkTarget(null)}>
+          <form className="md-modal md-modal-sm" onSubmit={makeLink} onMouseDown={(e) => e.stopPropagation()}>
+            <div className="md-modal-header">
+              <h3>បង្កើត Link ចូលថ្មី (Deep link)</h3>
+              <button type="button" className="md-icon-btn" onClick={() => setLinkTarget(null)} aria-label="Close">
+                <X size={18} />
+              </button>
+            </div>
+            <div className="md-modal-body">
+              <p>
+                <strong>{fullName(linkTarget)}</strong> ({linkTarget.email})
+              </p>
+              {!linkUrl && (
+                <>
+                  <div className="md-field">
+                    <label htmlFor="bl-label">ឈ្មោះ Link (ឧ. iPhone)</label>
+                    <input id="bl-label" type="text" maxLength={60} value={linkLabel} onChange={(e) => setLinkLabel(e.target.value)} disabled={linkSaving} />
+                  </div>
+                  <div className="md-field">
+                    <label htmlFor="bl-days">សុពលភាព</label>
+                    <select id="bl-days" value={linkDays} onChange={(e) => setLinkDays(Number(e.target.value))} disabled={linkSaving}>
+                      <option value={7}>៧ ថ្ងៃ</option>
+                      <option value={30}>៣០ ថ្ងៃ</option>
+                      <option value={90}>៩០ ថ្ងៃ</option>
+                    </select>
+                  </div>
+                  <label style={{ display: "flex", gap: 8, alignItems: "center", cursor: "pointer", marginBottom: 8 }}>
+                    <input type="checkbox" checked={linkOnce} onChange={(e) => setLinkOnce(e.target.checked)} style={{ width: "auto" }} />
+                    ប្រើបានតែម្តង
+                  </label>
+                  <label style={{ display: "flex", gap: 8, alignItems: "center", cursor: "pointer" }}>
+                    <input type="checkbox" checked={linkReset} onChange={(e) => setLinkReset(e.target.checked)} style={{ width: "auto" }} />
+                    លុប Link ចាស់ទាំងអស់ (ឧបករណ៍ដែលចូលដោយ Link ចាស់នឹងត្រូវចាកចេញ)
+                  </label>
+                </>
+              )}
+              {linkUrl && (
+                <div className="md-notice md-notice-success" style={{ wordBreak: "break-all" }}>
+                  <strong>Link ថ្មី (បង្ហាញតែម្តងនេះប៉ុណ្ណោះ — សូមចម្លងឥឡូវ):</strong>
+                  <div style={{ margin: "8px 0", fontFamily: "monospace", fontSize: 13, userSelect: "all" }}>{linkUrl}</div>
+                  <button type="button" className="md-btn md-btn-ghost doc-btn-sm" onClick={copyLink}>
+                    {linkCopied ? <Check size={14} /> : <Copy size={14} />}
+                    {linkCopied ? "បានចម្លង" : "ចម្លង"}
+                  </button>
+                </div>
+              )}
+              <div className="md-hint">អ្នកណាមាន Link នេះ អាចចូលជាថ្នាក់ដឹកនាំបាន។ សូមផ្ញើតាមបណ្តាញសុវត្ថិភាព។</div>
+              {linkError && <div className="md-form-error">{linkError}</div>}
+            </div>
+            <div className="md-modal-footer">
+              <button type="button" className="md-btn md-btn-ghost" onClick={() => setLinkTarget(null)} disabled={linkSaving}>
+                {linkUrl ? "បិទ" : "បោះបង់"}
+              </button>
+              {!linkUrl && (
+                <button type="submit" className="md-btn md-btn-primary" disabled={linkSaving}>
+                  {linkSaving ? "កំពុងបង្កើត..." : "បង្កើត Link"}
+                </button>
+              )}
+            </div>
+          </form>
+        </div>
+      )}
 
       {senderTarget && (
         <div className="md-modal-backdrop" onMouseDown={() => !senderSaving && setSenderTarget(null)}>

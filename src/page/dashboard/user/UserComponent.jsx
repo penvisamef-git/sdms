@@ -324,7 +324,7 @@ function UserComponent() {
                   <div style={{ margin: "8px 0", fontFamily: "monospace", fontSize: 13, userSelect: "all" }}>{linkUrl}</div>
                   {linkAppUrl && (
                     <div style={{ fontSize: 12, opacity: 0.75, marginBottom: 8 }}>
-                      សម្រាប់ App (ត្រូវដំឡើង App SDMS រួច — ប្រើ Link https ខាងលើ ងាយស្រួលជាង): <span style={{ fontFamily: "monospace", userSelect: "all" }}>{linkAppUrl}</span>
+                      Link https ខាងលើ ប្រើបានទាំង Web និង App (ចុចហើយបើក App ភ្លាមៗ បើបានដំឡើង)។ Link បម្រុងសម្រាប់ App៖ <span style={{ fontFamily: "monospace", userSelect: "all" }}>{linkAppUrl}</span>
                     </div>
                   )}
                   <button type="button" className="md-btn md-btn-ghost doc-btn-sm" onClick={copyLink}>

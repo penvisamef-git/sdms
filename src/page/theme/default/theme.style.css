@@ -10,7 +10,7 @@
 
 body {
   font-family: var(--font-body);
-  background: var(--color-background-app, #6f9d94);
+  background: var(--color-background-app, #f6f8fa);
   overflow: hidden;
   height: 100vh;
 }
@@ -31,9 +31,9 @@ button {
 .app {
   width: 100%;
   height: 100vh;
-  padding: 25px;
+  padding: 0;
   display: flex;
-  background: var(--color-background-app, #6f9d94);
+  background: var(--color-background-app, #f6f8fa);
   overflow: hidden;
 }
 
@@ -43,13 +43,14 @@ button {
 
 .sidebar {
   width: 220px;
-  height: calc(100vh - 50px);
+  height: 100vh;
   background: var(--color-background-sidebar, #f8f9f7);
-  border-radius: 28px 0 0 28px;
+  border-radius: 0;
+  border-right: 1px solid var(--color-border-light, #e9ecef);
   padding: 30px 20px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 30px var(--color-shadow-default, rgba(0, 0, 0, 0.2));
+  box-shadow: none;
   z-index: 10;
   flex-shrink: 0;
 }
@@ -67,7 +68,7 @@ button {
   gap: 6px;
   margin-bottom: 35px;
   padding-bottom: 20px;
-  border-bottom: 1px solid var(--color-border-light, #e5ebe9);
+  border-bottom: 1px solid var(--color-border-light, var(--color-surface-border, #e9ecef));
   width: 100%;
   flex-shrink: 0;
 }
@@ -77,7 +78,7 @@ button {
   font-size: 14px;
   font-weight: 400;
   line-height: 1.9;
-  color: var(--color-text-primary, #176e6a);
+  color: var(--color-text-primary, #0f5132);
   margin: 0;
  
 }
@@ -87,7 +88,7 @@ button {
   font-size: 9px;
   font-weight: 500;
   line-height: 1.6;
-  color: var(--color-text-muted, #7a8d89);
+  color: var(--color-text-muted, #868e96);
   margin: 0;
 
   text-transform: uppercase;
@@ -106,7 +107,7 @@ button {
   height: 90px;
   margin: auto;
   border-radius: 50%;
-  border: 3px dashed var(--color-border-dashed, #2b9d97);
+  border: 3px dashed var(--color-border-dashed, #198754);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -116,7 +117,7 @@ button {
 .profile h3 {
   font-size: 13px;
   margin-top: 15px;
-  color: var(--color-text-primary, #176e6a);
+  color: var(--color-text-primary, #0f5132);
 }
 
 
@@ -153,7 +154,7 @@ button {
 }
 
 .nav-menu::-webkit-scrollbar-thumb:hover {
-  background: var(--color-primary-main, #087b75);
+  background: var(--color-primary-main, #198754);
 }
 
 .nav-menu > * {
@@ -179,14 +180,14 @@ button {
 
 .nav-menu a:hover,
 .nav-menu .active {
-  background: var(--color-hover-sidebar, #e9f5f3);
-  color: var(--color-hover-text, #087d76);
+  background: var(--color-hover-sidebar, #e8f3ec);
+  color: var(--color-hover-text, #198754);
 }
 
 .logout {
   margin-top: 14px;
   border: none;
-  background: var(--color-button-logoutBg, #087f79);
+  background: var(--color-button-logoutBg, #198754);
   color: var(--color-button-text, white);
   padding: 13px;
   border-radius: 12px;
@@ -200,7 +201,7 @@ button {
 
 .logout:hover {
   transform: translateY(-2px);
-  background: var(--color-button-logoutHover, #056862);
+  background: var(--color-button-logoutHover, #146c43);
 }
 
 /* =========================
@@ -211,12 +212,12 @@ button {
   flex: 1;
   min-width: 0;
   background: var(--color-background-main, #f6f7f5);
-  border-radius: 0 28px 28px 0;
+  border-radius: 0;
   padding: 20px;
-  box-shadow: 0 10px 30px var(--color-shadow-default, rgba(0, 0, 0, 0.2));
+  box-shadow: none;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 50px);
+  height: 100vh;
   overflow: hidden;
 }
 
@@ -230,7 +231,7 @@ button {
   justify-content: space-between;
   gap: 20px;
   padding-bottom: 15px;
-  border-bottom: 1px solid var(--color-border-light, #ddd);
+  border-bottom: 1px solid var(--color-border-light, var(--color-surface-border, #e9ecef));
   flex-shrink: 0;
 }
 
@@ -246,8 +247,9 @@ button {
 }
 
 .page-title {
-  font-size: 25px;
-  color: var(--color-text-primary, #176e6a);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary, #0f5132);
   margin: 0;
 }
 
@@ -271,12 +273,12 @@ button {
 }
 
 .breadcrumb-link:hover {
-  color: var(--color-primary-main, #087b75);
+  color: var(--color-primary-main, #198754);
   text-decoration: underline;
 }
 
 .breadcrumb-current {
-  color: var(--color-text-primary, #176e6a);
+  color: var(--color-text-primary, #0f5132);
   font-weight: 600;
 }
 
@@ -306,12 +308,12 @@ button {
 }
 
 .content-wrapper::-webkit-scrollbar-thumb {
-  background: var(--color-primary-main, #087b75);
+  background: var(--color-primary-main, #198754);
   border-radius: 10px;
 }
 
 .content-wrapper::-webkit-scrollbar-thumb:hover {
-  background: var(--color-primary-dark, #056862);
+  background: var(--color-primary-dark, #146c43);
 }
 
 /* =========================
@@ -320,7 +322,7 @@ button {
 
 .footer {
   padding-top: 15px;
-  border-top: 1px solid var(--color-border-light, #ddd);
+  border-top: 1px solid var(--color-border-light, var(--color-surface-border, #e9ecef));
   text-align: center;
   color: var(--color-text-muted, #999);
   font-size: 13px;
@@ -345,7 +347,7 @@ button {
   height: 45px;
   border: none;
   border-radius: 10px;
-  background: var(--color-primary-main, #087b75);
+  background: var(--color-primary-main, #198754);
   color: var(--color-text-white, white);
   align-items: center;
   justify-content: center;
@@ -378,13 +380,13 @@ button {
 }
 
 .menu-item:hover {
-  background: var(--color-menu-hover, #e9f5f3);
-  color: var(--color-menu-hoverText, #087d76);
+  background: var(--color-menu-hover, #e8f3ec);
+  color: var(--color-menu-hoverText, #198754);
 }
 
 .menu-item.menu-open {
-  background: var(--color-menu-open, #e9f5f3);
-  color: var(--color-menu-openText, #087d76);
+  background: var(--color-menu-open, #e8f3ec);
+  color: var(--color-menu-openText, #198754);
 }
 
 .menu-left {
@@ -446,13 +448,13 @@ button {
 }
 
 .submenu a:hover {
-  background: var(--color-menu-submenuHover, #f0f8f7);
-  color: var(--color-menu-submenuHoverText, #087d76);
+  background: var(--color-menu-submenuHover, #f1f8f4);
+  color: var(--color-menu-submenuHoverText, #198754);
   transform: translateX(3px);
 }
 
 .submenu a.active {
-  background: var(--color-menu-submenuActiveBg, #087d76);
+  background: var(--color-menu-submenuActiveBg, #198754);
   color: var(--color-menu-submenuActiveText, white);
 }
 
@@ -664,8 +666,8 @@ button {
   margin-top: 10px;
   padding: 6px 18px;
   border-radius: 999px;
-  border: 1px solid var(--color-border-dashed, #2b9d97);
-  color: var(--color-text-primary, #176e6a);
+  border: 1px solid var(--color-border-dashed, #198754);
+  color: var(--color-text-primary, #0f5132);
   font-size: 13px;
   text-decoration: none;
   transition: background 0.2s;
@@ -673,7 +675,7 @@ button {
 
 .profile-account:hover,
 .profile-account.active {
-  background: var(--color-hover-sidebar, #e9f5f3);
+  background: var(--color-hover-sidebar, #e8f3ec);
 }
 
 /* =========================
@@ -696,7 +698,7 @@ button {
   max-width: 380px;
   padding: 26px 24px 22px;
   border-radius: 16px;
-  background: #ffffff;
+  background: var(--color-surface-card, #ffffff);
   text-align: center;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
 }
@@ -708,20 +710,20 @@ button {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: var(--color-hover-sidebar, #e9f5f3);
-  color: var(--color-primary-main, #087b75);
+  background: var(--color-hover-sidebar, #e8f3ec);
+  color: var(--color-primary-main, #198754);
 }
 
 .logout-dialog h3 {
   margin: 0 0 6px;
   font-size: 17px;
-  color: var(--color-text-primary, #176e6a);
+  color: var(--color-text-primary, #0f5132);
 }
 
 .logout-dialog p {
   margin: 0 0 20px;
   font-size: 14px;
-  color: #5f6764;
+  color: var(--color-surface-muted, #6c757d);
 }
 
 .logout-dialog-actions {
@@ -739,13 +741,13 @@ button {
 }
 
 .logout-dialog-cancel {
-  border: 1px solid #dfe5e3;
-  background: #ffffff;
-  color: #333333;
+  border: 1px solid var(--color-surface-border, #e9ecef);
+  background: var(--color-surface-card, #ffffff);
+  color: var(--color-surface-text, #1a1d21);
 }
 
 .logout-dialog-cancel:hover {
-  background: var(--color-hover-sidebar, #e9f5f3);
+  background: var(--color-hover-sidebar, #e8f3ec);
 }
 
 .logout-dialog-confirm {
@@ -756,4 +758,45 @@ button {
 
 .logout-dialog-confirm:hover {
   background: #b93838;
+}
+
+
+/* =========================
+   v2 — design A (Western clean) + dark mode
+========================= */
+
+body {
+  color: var(--color-surface-text, #1a1d21);
+  -webkit-font-smoothing: antialiased;
+}
+
+.content-wrapper {
+  color: var(--color-surface-text, #1a1d21);
+}
+
+.nav-menu .active {
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--color-primary-main, #198754);
+}
+
+[data-theme="dark"] .content-wrapper input,
+[data-theme="dark"] .content-wrapper select,
+[data-theme="dark"] .content-wrapper textarea {
+  background: var(--color-surface-field, #0f1b14);
+  color: var(--color-surface-text, #e6efea);
+  border-color: var(--color-surface-borderStrong, #2e4a3b);
+}
+
+[data-theme="dark"] .content-wrapper input::placeholder,
+[data-theme="dark"] .content-wrapper textarea::placeholder {
+  color: var(--color-surface-muted, #9db1a6);
+}
+
+[data-theme="dark"] .content-wrapper th,
+[data-theme="dark"] .content-wrapper td {
+  border-color: var(--color-surface-border, #22372b);
+}
+
+[data-theme="dark"] .content-wrapper a {
+  color: var(--color-primary-main, #5fe0b8);
 }

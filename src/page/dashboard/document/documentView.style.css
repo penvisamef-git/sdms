@@ -1,8 +1,8 @@
 /* ---------- Received document detail page (read-only) ---------- */
 
 .doc-view-bar {
-  background: #eef7f6;
-  border-color: #cfe6e3;
+  background: var(--color-surface-soft, #e8f3ec);
+  border-color: #d3ecdd;
   color: var(--md-primary);
 }
 
@@ -18,7 +18,7 @@
   padding: 9px 12px;
   border: 1px solid var(--md-border);
   border-radius: 8px;
-  background: #f7f9f8;
+  background: var(--color-surface-raised, #f6f8fa);
   color: var(--md-text);
   line-height: 1.6;
   white-space: pre-wrap;
@@ -44,7 +44,7 @@
 
 /* ---------- extra badges ---------- */
 .md-badge-danger {
-  background: #fdecec;
+  background: var(--color-surface-dangerSoft, #fdecee);
   color: #c0392b;
 }
 
@@ -65,7 +65,7 @@
   padding: 12px;
   border: 1px solid var(--md-border);
   border-radius: 8px;
-  background: #f7f9f8;
+  background: var(--color-surface-raised, #f6f8fa);
   text-align: center;
 }
 
@@ -144,7 +144,7 @@
 }
 
 .trk-item-return .trk-dot {
-  background: #fdecec;
+  background: var(--color-surface-dangerSoft, #fdecee);
   color: #c0392b;
 }
 
@@ -193,7 +193,7 @@
 .trk-note {
   margin-top: 6px;
   padding: 6px 10px;
-  background: #f7f9f8;
+  background: var(--color-surface-raised, #f6f8fa);
   border-radius: 6px;
   font-size: 13px;
   white-space: pre-wrap;
@@ -243,7 +243,7 @@
   padding: 8px 12px;
   border: 1px solid var(--md-border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--color-surface-card, #ffffff);
   color: var(--md-text);
   font: inherit;
   text-align: left;
@@ -322,7 +322,7 @@
   height: 78vh;
   min-height: 480px;
   border: 0;
-  background: #fff;
+  background: var(--color-surface-card, #ffffff);
 }
 
 .doc-viewer-image {

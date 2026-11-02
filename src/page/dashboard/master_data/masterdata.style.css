@@ -3,9 +3,9 @@
 ========================= */
 
 .md-page {
-  --md-primary: var(--color-primary-main, #087f79);
-  --md-primary-hover: var(--color-primary-dark, #056862);
-  --md-soft: var(--color-hover-sidebar, #e9f5f3);
+  --md-primary: var(--color-primary-main, #198754);
+  --md-primary-hover: var(--color-primary-dark, #146c43);
+  --md-soft: var(--color-hover-sidebar, #e8f3ec);
   --md-border: #e4e8e6;
   --md-text: #333333;
   --md-muted: #7a817e;
@@ -37,7 +37,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #ffffff;
+  background: var(--color-surface-card, #ffffff);
   border: 1px solid var(--md-border);
   border-radius: 10px;
   padding: 0 12px;
@@ -110,7 +110,7 @@
 }
 
 .md-btn-ghost {
-  background: #ffffff;
+  background: var(--color-surface-card, #ffffff);
   border-color: var(--md-border);
   color: var(--md-text);
 }
@@ -138,7 +138,7 @@
 }
 
 .md-icon-btn-danger:hover:not(:disabled) {
-  background: #fdecec;
+  background: var(--color-surface-dangerSoft, #fdecee);
   color: var(--md-danger);
 }
 
@@ -160,7 +160,7 @@
 /* ---------- Table ---------- */
 
 .md-card {
-  background: #ffffff;
+  background: var(--color-surface-card, #ffffff);
   border: 1px solid var(--md-border);
   border-radius: 14px;
   overflow: hidden;
@@ -184,7 +184,7 @@
 }
 
 .md-table th {
-  background: #f7f9f8;
+  background: var(--color-surface-raised, #f6f8fa);
   color: var(--md-muted);
   font-weight: 600;
   font-size: 13px;
@@ -192,7 +192,7 @@
 }
 
 .md-table tbody tr:hover {
-  background: #fafcfb;
+  background: var(--color-surface-raised, #f6f8fa);
 }
 
 .md-table tbody tr:last-child td {
@@ -267,7 +267,7 @@
   border-radius: 8px;
   padding: 0 6px;
   font: inherit;
-  background: #ffffff;
+  background: var(--color-surface-card, #ffffff);
 }
 
 .md-pager {
@@ -291,7 +291,7 @@
 }
 
 .md-notice-error {
-  background: #fdecec;
+  background: var(--color-surface-dangerSoft, #fdecee);
   color: var(--md-danger);
 }
 
@@ -314,7 +314,7 @@
   max-height: calc(100vh - 32px);
   display: flex;
   flex-direction: column;
-  background: #ffffff;
+  background: var(--color-surface-card, #ffffff);
   border-radius: 16px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
   overflow: hidden;
@@ -381,7 +381,7 @@
   padding: 9px 12px;
   font: inherit;
   color: var(--md-text);
-  background: #ffffff;
+  background: var(--color-surface-card, #ffffff);
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -400,7 +400,7 @@
 .md-form-error {
   padding: 10px 12px;
   border-radius: 10px;
-  background: #fdecec;
+  background: var(--color-surface-dangerSoft, #fdecee);
   color: var(--md-danger);
   font-size: 13px;
 }
@@ -439,7 +439,7 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #ffffff;
+  background: var(--color-surface-card, #ffffff);
   transition: transform 0.2s;
 }
 
@@ -584,17 +584,17 @@
 }
 
 .md-tree-icon-unit {
-  background: #e3f1ee;
-  color: #087f79;
+  background: var(--color-surface-soft, #e8f3ec);
+  color: #198754;
 }
 
 .md-tree-icon-general_directorate {
-  background: #e6eefb;
+  background: var(--color-surface-infoSoft, #e6eefb);
   color: #2f5fb3;
 }
 
 .md-tree-icon-department {
-  background: #fdf1de;
+  background: var(--color-surface-warnSoft, #fff3df);
   color: #b7791f;
 }
 

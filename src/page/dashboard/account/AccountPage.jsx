@@ -4,6 +4,7 @@ import { homeService, userService } from "../../../api/api.service";
 import Auth from "../../util/auth";
 import { ROLE, roleText } from "../user/userRoles";
 import MyLinksCard from "./MyLinksCard";
+import AppearanceCard from "./AppearanceCard";
 import "../master_data/masterdata.style.css";
 import "./account.style.css";
 import { SkLines } from "../../util/Skeleton";
@@ -202,6 +203,9 @@ function AccountPage() {
 
         {/* ---------- Big Boss: my deep links ---------- */}
         {isBoss && <MyLinksCard />}
+
+        {/* ---------- appearance ---------- */}
+        <AppearanceCard />
 
         {/* ---------- password ---------- */}
         <section className="md-card ac-card ac-wide">

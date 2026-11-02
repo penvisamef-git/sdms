@@ -16,7 +16,7 @@
   border: 1px solid var(--md-border);
   border-bottom: 0;
   border-radius: 8px 8px 0 0;
-  background: #fff;
+  background: var(--color-surface-card, #ffffff);
 }
 
 .pdfa-group {
@@ -41,7 +41,7 @@
   padding: 6px 10px;
   border: 1px solid var(--md-border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--color-surface-card, #ffffff);
   color: var(--md-text);
   font: inherit;
   font-size: 13px;
@@ -113,7 +113,7 @@
   padding: 5px 8px;
   border: 1px solid var(--md-border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--color-surface-card, #ffffff);
   font: inherit;
   font-size: 13px;
 }
@@ -137,7 +137,7 @@
   padding: 6px 10px;
   border: 1px solid var(--md-border);
   border-bottom: 0;
-  background: #f7f9f8;
+  background: var(--color-surface-raised, #f6f8fa);
   font-size: 12.5px;
   color: var(--md-muted);
 }
@@ -175,7 +175,7 @@
   position: relative;
   flex: 0 0 auto;
   margin: 0 auto;
-  background: #fff;
+  background: var(--color-surface-card, #ffffff);
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.18);
 }
 
@@ -272,7 +272,7 @@
 }
 
 .pdfa-textarea::placeholder {
-  color: #9aa5a3;
+  color: var(--color-surface-muted, #6c757d);
   font-size: 0.8em;
 }
 
@@ -389,7 +389,7 @@
   width: min(620px, 100%);
   padding: 16px;
   border-radius: 12px;
-  background: #fff;
+  background: var(--color-surface-card, #ffffff);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
 }
 
@@ -423,7 +423,7 @@
   padding: 0;
   border: 1px solid var(--md-border);
   border-radius: 6px;
-  background: #fff;
+  background: var(--color-surface-card, #ffffff);
   cursor: pointer;
 }
 
@@ -444,7 +444,7 @@
   height: 220px;
   border: 1px dashed var(--md-border);
   border-radius: 8px;
-  background: #fcfdfc;
+  background: var(--color-surface-raised, #f6f8fa);
 }
 
 .pdfa-pad-canvas {
@@ -471,7 +471,7 @@
   left: 16px;
   right: 16px;
   bottom: 44px;
-  border-bottom: 1px solid #d5dbd9;
+  border-bottom: 1px solid var(--color-surface-border, #e9ecef);
   pointer-events: none;
 }
 
@@ -497,7 +497,7 @@
   gap: 8px;
   padding: 8px 12px;
   border-bottom: 1px solid var(--md-border);
-  background: #fff;
+  background: var(--color-surface-card, #ffffff);
   font-size: 13px;
   color: var(--md-muted);
 }
@@ -516,7 +516,7 @@
   padding: 8px 10px;
   border: 1px solid #f0d9a8;
   border-bottom: 0;
-  background: #fff8e6;
+  background: var(--color-surface-warnSoft, #fff3df);
   font-size: 13px;
   color: #7a5a12;
 }

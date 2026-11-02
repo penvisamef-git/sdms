@@ -7,7 +7,7 @@
   --hm-surface: #ffffff;
   --hm-c1: #2a78d6; /* categorical slot 1 — blue   */
   --hm-c2: #eb6834; /* categorical slot 2 — orange */
-  --hm-c3: #1baf7a; /* categorical slot 3 — aqua   */
+  --hm-c3: #20a878; /* categorical slot 3 — aqua   */
   --hm-other: #b4bfbc; /* de-emphasis / "other" */
   --hm-grid: #e9edeb;
   --hm-axis: #c6cfcc;
@@ -54,7 +54,7 @@
   padding: 0 4px;
   border: 1px solid var(--md-border);
   border-radius: 10px;
-  background: #fff;
+  background: var(--color-surface-card, #ffffff);
 }
 
 .hm-month-pick {
@@ -87,7 +87,7 @@
   padding: 0 10px 0 12px;
   border: 1px solid var(--md-border);
   border-radius: 10px;
-  background: #fff;
+  background: var(--color-surface-card, #ffffff);
   color: var(--hm-muted);
 }
 
@@ -126,7 +126,7 @@
   margin-bottom: 12px;
   padding: 8px 12px;
   border-radius: 8px;
-  background: #fdecec;
+  background: var(--color-surface-dangerSoft, #fdecee);
   color: var(--md-danger);
 }
 
@@ -352,7 +352,7 @@
 }
 
 .hm-seg button.is-active {
-  background: #fff;
+  background: var(--color-surface-card, #ffffff);
   color: var(--hm-ink);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
 }
@@ -422,7 +422,7 @@ line.hm-axis {
   padding: 6px 10px;
   border: 1px solid var(--md-border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--color-surface-card, #ffffff);
   box-shadow: 0 4px 14px rgba(20, 30, 28, 0.14);
   white-space: nowrap;
   pointer-events: none;
@@ -592,7 +592,7 @@ line.hm-axis {
 .hm-table th {
   position: sticky;
   top: 0;
-  background: #fff;
+  background: var(--color-surface-card, #ffffff);
   font-weight: 600;
   color: var(--hm-ink2);
 }
@@ -757,7 +757,7 @@ line.hm-axis {
 }
 
 .hm-pill-warn {
-  background: #fff3df;
+  background: var(--color-surface-warnSoft, #fff3df);
   color: #9a5b00;
 }
 

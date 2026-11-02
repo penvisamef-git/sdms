@@ -231,3 +231,51 @@
 .ac-page .md-field input {
   box-sizing: border-box;
 }
+
+/* ---------- appearance switch (v2) ---------- */
+.ac-seg {
+  display: inline-flex;
+  padding: 4px;
+  gap: 4px;
+  border: 1px solid var(--color-surface-border, #e9ecef);
+  border-radius: 12px;
+  background: var(--color-surface-raised, #f6f8fa);
+  max-width: 100%;
+}
+
+.ac-seg-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 96px;
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--color-surface-muted, #6c757d);
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s;
+}
+
+.ac-seg-item:hover {
+  color: var(--color-surface-text, #1a1d21);
+}
+
+.ac-seg-item.is-on {
+  background: var(--color-surface-card, #ffffff);
+  color: var(--color-primary-dark, #0f5132);
+  box-shadow: 0 1px 3px var(--color-shadow-light, rgba(15, 81, 50, 0.06));
+}
+
+@media (max-width: 480px) {
+  .ac-seg {
+    display: flex;
+    width: 100%;
+  }
+  .ac-seg-item {
+    flex: 1;
+    min-width: 0;
+    padding: 9px 8px;
+  }
+}
